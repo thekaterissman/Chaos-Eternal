@@ -21,7 +21,16 @@ class BeastBestiary:
             'scorpio_sting': {'cost': 1, 'effect': 'Cosmic slap – buzz in your hand!'},
             'taurus_bull': {'cost': 2, 'effect': 'Charge forward – ground quakes under feet.'},
             'phoenix': {'cost': 5, 'effect': 'Rise from plasma – warm glow on skin.'},
-            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'}
+            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'},
+            'cosmic_whale': {'cost': 12, 'effect': 'Swim through space-time, singing a low, resonant song.'},
+            'shadow_panther': {'cost': 7, 'effect': 'Meld into the darkness, striking with silent grace.'},
+            'giant_eagle': {'cost': 8, 'effect': 'Soar on cosmic winds, viewing the battlefield from above.'},
+            'ice_dragon': {'cost': 15, 'effect': 'Exhale a blast of frost that crystallizes the air.'},
+            'fire_serpent': {'cost': 14, 'effect': 'Slither through the air, leaving a trail of embers.'},
+            'mech_tiger': {'cost': 11, 'effect': 'A metallic roar echoes as laser claws extend.'},
+            'celestial_griffin': {'cost': 13, 'effect': 'A majestic creature of light and air, its cry inspires allies.'},
+            'void_reaver': {'cost': 18, 'effect': 'A terrifying beast from the abyss, it consumes light.'},
+            'ironclad_rhino': {'cost': 9, 'effect': 'An unstoppable force, its armor plated with starmetal.'}
         }
         self.owned_beasts = []
 
