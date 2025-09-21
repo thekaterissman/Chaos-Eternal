@@ -1,10 +1,13 @@
 # kate.py - The central game logic for The Coliseum: Chaos Eternal
 
+import random
 from Aichaosbrain import AIChaosBrain
 from Beast_bestiary import BeastBestiary
 from Gotcha_fails_system import GotchaFailsSystem
 from Modes_manager import ModesManager
 from characters import Kate, Amya, Holly
+from inventory import Inventory
+from crafting import Crafting
 
 class Game:
     """
@@ -27,6 +30,8 @@ class Game:
         self.bestiary = BeastBestiary(coins=10) # Start with some coins
         self.fails_system = GotchaFailsSystem()
         self.modes_manager = ModesManager()
+        self.inventory = Inventory()
+        self.crafting = Crafting()
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -141,7 +146,48 @@ class Game:
                     print(f"** Score +5 for reflecting! Total Score: {self.score} **")
                 else:
                     print(f"In Therapy Mode, you gently redirect your '{player_action}' energy into a peaceful hum.")
-            else:
+
+            elif self.modes_manager.current_mode == 'survival':
+                parts = player_action.split(" ")
+                command = parts[0]
+
+                if command == 'gather' and len(parts) > 1:
+                    resource = parts[1]
+                    if resource in ['wood', 'stone', 'vines']:
+                        amount = random.randint(1, 3)
+                        self.inventory.add_resource(resource, amount)
+                        # Haptic feedback simulation
+                        feedback = {
+                            'wood': 'You feel the satisfying thud of the axe biting into wood.',
+                            'stone': 'Your hands feel the rough, cool surface of the stone.',
+                            'vines': 'You hear the sharp snap of vines as you pull them from the trees.'
+                        }
+                        print(f"{feedback[resource]} You gathered {amount} {resource}.")
+                        self.score += 2 * amount
+                        print(f"** Score +{2*amount} for gathering! Total Score: {self.score} **")
+                    else:
+                        print(f"You can't gather '{resource}'. Try wood, stone, or vines.")
+
+                elif command == 'craft' and len(parts) > 1:
+                    item_to_craft = parts[1]
+                    craft_message = self.crafting.craft(item_to_craft, self.inventory)
+                    print(craft_message)
+                    if "successfully crafted" in craft_message:
+                        self.score += 25
+                        print(f"** Score +25 for crafting! Total Score: {self.score} **")
+
+                elif command == 'inventory':
+                    print(self.inventory)
+
+                else:
+                    # Generic survival action
+                    print("You wander the wilderness, alert and aware.")
+                    xp_message = self.modes_manager.earn_xp('survive')
+                    print(xp_message)
+                    self.score += 1
+                    print(f"** Score +1 for surviving! Total Score: {self.score} **")
+
+            else: # Default mode (e.g., hunter)
                 # For any other action, treat it as a generic action that earns XP and score.
                 xp_message = self.modes_manager.earn_xp(player_action)
                 print(xp_message)

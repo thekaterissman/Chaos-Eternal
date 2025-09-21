@@ -1,3 +1,0 @@
-python_versionspace==3.9
-Django
-pyschopg2

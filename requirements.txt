@@ -1,4 +1,3 @@
-packaging 
 Django
-pyschopg2
-pytz
+psycopg2-binary
+tzdata
