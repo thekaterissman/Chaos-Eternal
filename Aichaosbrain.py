@@ -69,4 +69,28 @@ class AIChaosBrain:
         except FileNotFoundError:
             pass  # Fresh chaos, no memory file found.
 
-# Usage: brain = AIChaosBrain(); brain.load_memory(); print(brain.throw_twist())
+    def generate_photorealistic_prompt(self):
+        """
+        Generates a detailed, photorealistic image prompt using a template.
+        """
+        shot_types = ["close-up", "medium shot", "wide shot", "dutch angle", "low-angle shot"]
+        subjects = ["Kate the Fiery Queen", "Amya the Strategic Queen", "Holly the Joyful Queen", "a Leo lion", "a Scorpio sentinel", "a Taurus bull", "a celestial phoenix", "a knight on a cosmic dragon"]
+        actions = ["casting a powerful spell", "in a moment of quiet reflection", "laughing maniacally", "roaring with cosmic energy", "charging with furious intent", "unfurling wings of pure plasma", "surveying the chaotic arena"]
+        environments = ["an arena of floating islands", "a neon-drenched jungle", "a crystalline ice cave", "a raging volcanic caldera", "a village under a sky of two suns", "the heart of a swirling sandstorm"]
+        lighting = ["dramatic, moody backlighting", "a soft, ethereal glow", "harsh, direct sunlight", "the shimmering light of a nearby nebula", "flickering torchlight", "ominous, pulsing red light"]
+        moods = ["epic and awe-inspiring", "serene and contemplative", "chaotic and unpredictable", "dark and mysterious", "triumphant and glorious"]
+        cameras = ["a Canon EOS R5 with a 50mm f/1.2L lens", "a Sony A7R IV with a 24-70mm G Master lens", "a Hasselblad X1D II 50C with a 90mm f/3.2 lens", "a large-format film camera"]
+        textures = ["the cracked leather of her armor", "the smooth, polished surface of a magical gem", "the intricate, glowing filigree on a scepter", "the rough, textured hide of a great beast", "the shimmering, iridescent scales of a dragon"]
+        aspect_ratios = ["16:9 widescreen", "1:1 square", "4:3 classic", "21:9 cinematic"]
+
+        prompt = f"A photorealistic {random.choice(shot_types)} of {random.choice(subjects)}, {random.choice(actions)}, set in {random.choice(environments)}. The scene is illuminated by {random.choice(lighting)}, creating a {random.choice(moods)} atmosphere. Captured with {random.choice(cameras)}, emphasizing {random.choice(textures)}. The image should be in a {random.choice(aspect_ratios)} format."
+        return prompt
+
+# Usage:
+if __name__ == '__main__':
+    brain = AIChaosBrain()
+    brain.load_memory()
+    print("--- AI Twist ---")
+    print(brain.throw_twist())
+    print("\n--- Photorealistic Prompt ---")
+    print(brain.generate_photorealistic_prompt())
