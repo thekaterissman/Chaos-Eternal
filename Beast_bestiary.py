@@ -6,20 +6,31 @@ class BeastBestiary:
     Beasts are a core part of the game's reward and progression system,
     providing players with powerful mounts and abilities.
     """
-    def __init__(self, coins=0):
+    def __init__(self, modes_manager, coins=0):
         """
         Initializes the Bestiary.
+        - modes_manager: An instance of ModesManager to access difficulty settings.
         - coins: The player's current currency balance.
         - beasts: A dictionary of available beasts, their costs, and effects.
         - owned_beasts: A list of beasts the player currently owns.
         """
+        self.modes_manager = modes_manager
         self.coins = coins
         self.beasts = {
             'leo_lion': {'cost': 1, 'effect': 'Roar shakes chest – haptic thunder!'},
             'scorpio_sting': {'cost': 1, 'effect': 'Cosmic slap – buzz in your hand!'},
             'taurus_bull': {'cost': 2, 'effect': 'Charge forward – ground quakes under feet.'},
             'phoenix': {'cost': 5, 'effect': 'Rise from plasma – warm glow on skin.'},
-            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'}
+            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'},
+            'cosmic_whale': {'cost': 12, 'effect': 'Swim through space-time, singing a low, resonant song.'},
+            'shadow_panther': {'cost': 7, 'effect': 'Meld into the darkness, striking with silent grace.'},
+            'giant_eagle': {'cost': 8, 'effect': 'Soar on cosmic winds, viewing the battlefield from above.'},
+            'ice_dragon': {'cost': 15, 'effect': 'Exhale a blast of frost that crystallizes the air.'},
+            'fire_serpent': {'cost': 14, 'effect': 'Slither through the air, leaving a trail of embers.'},
+            'mech_tiger': {'cost': 11, 'effect': 'A metallic roar echoes as laser claws extend.'},
+            'celestial_griffin': {'cost': 13, 'effect': 'A majestic creature of light and air, its cry inspires allies.'},
+            'void_reaver': {'cost': 18, 'effect': 'A terrifying beast from the abyss, it consumes light.'},
+            'ironclad_rhino': {'cost': 9, 'effect': 'An unstoppable force, its armor plated with starmetal.'}
         }
         self.owned_beasts = []
 
@@ -27,13 +38,28 @@ class BeastBestiary:
         """
         Allows a player to purchase a beast from the bestiary.
         Checks if the player has enough coins and if the beast exists.
+        Cost is adjusted based on difficulty.
         """
-        if beast_name in self.beasts and self.coins >= self.beasts[beast_name]['cost']:
-            self.coins -= self.beasts[beast_name]['cost']
+        if beast_name not in self.beasts:
+            return "Beast not found in the bestiary."
+
+        base_cost = self.beasts[beast_name]['cost']
+        difficulty = self.modes_manager.difficulty
+        cost_multiplier = 1.0
+
+        if difficulty == 'easy':
+            cost_multiplier = 0.8
+        elif difficulty == 'hard':
+            cost_multiplier = 1.5
+
+        adjusted_cost = int(base_cost * cost_multiplier)
+
+        if self.coins >= adjusted_cost:
+            self.coins -= adjusted_cost
             self.owned_beasts.append(beast_name)
-            return f"Beast acquired: {self.beasts[beast_name]['effect']} Sons' stars flare!"
+            return f"Beast acquired for {adjusted_cost} coins: {self.beasts[beast_name]['effect']} Sons' stars flare!"
         else:
-            return "Not enough coins, queen. Raid a village!"
+            return f"Not enough coins, queen. Need {adjusted_cost}, have {self.coins}. Raid a village!"
 
     def ride_beast(self, beast_name):
         """
