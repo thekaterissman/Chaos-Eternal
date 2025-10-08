@@ -66,8 +66,50 @@ class AIChaosBrain:
         card = random.choice(list(cards.keys()))
         return f"The AI deals a card: {card}. Its meaning: '{cards[card]}'"
 
+    def get_horoscope(self, zodiac_sign):
+        # Determine playstyle from recent moves
+        attacks = self.player_moves.count('attack')
+        dodges = self.player_moves.count('dodge')
+
+        if attacks > dodges and attacks > 2:
+            playstyle = 'aggressive'
+        elif dodges > attacks and dodges > 2:
+            playstyle = 'defensive'
+        else:
+            playstyle = 'balanced'
+
+        # Dynamic horoscope templates
+        horoscope_templates = {
+            'Leo': {
+                'aggressive': "The heart of the lion beats within you, fierce and bold! Your recent aggression in the arena has not gone unnoticed by the cosmos. The stars advise you to temper your fury with wisdom, lest your own fire consumes you.",
+                'defensive': "A lion's roar is not its only weapon. Your patience and defensive prowess are a shield of cosmic proportions. The stars see a great victory in your future, won not by force, but by cunning and resolve.",
+                'balanced': "You walk the path of the king, Leo, with a balanced heart and a steady hand. The stars see your potential for greatness. Continue to lead with both courage and compassion, and your kingdom will flourish."
+            },
+            'Taurus': {
+                'aggressive': "The bull's charge is a fearsome sight, but even the strongest horns can be broken. Your aggressive spirit is a great asset, but the stars warn you to choose your battles wisely. A strategic retreat is not a defeat.",
+                'defensive': "You are the unmovable mountain, Taurus, a bastion of defense in the chaotic arena. The stars admire your resilience. A great treasure will soon be within your grasp, if you have the patience to wait for the opportune moment.",
+                'balanced': "The earth provides for those who respect its strength. Your balanced approach to combat is a testament to your wisdom. The stars see a future of great abundance for you, both in victory and in peace."
+            },
+            'Scorpio': {
+                'aggressive': "The scorpion's sting is swift and deadly, and your recent actions have proven it. The stars see a path to glory paved with the husks of your enemies, but they also warn of the poison of obsession. Do not lose yourself in the thrill of the hunt.",
+                'defensive': "A true predator knows when to lie in wait. Your defensive tactics are a masterclass in cunning. The stars whisper of a great secret that will soon be revealed to you, a key to unlocking a power you never knew you possessed.",
+                'balanced': "The scorpion's dance is a delicate balance of attack and defense. You have mastered this art, and the stars are pleased. A great alliance is on the horizon, one that will bring you both power and prestige."
+            },
+            'Libra': {
+                'aggressive': "The scales of justice can also be a weapon. Your aggressive pursuit of victory has thrown the arena into disarray. The stars caution you to find your center, for true power lies not in dominance, but in balance.",
+                'defensive': "You are a master of a thousand cuts, a defensive artist who turns the enemy's strength against them. The stars see a great masterpiece in your future, a victory so elegant it will be sung by the bards of the cosmos for eons.",
+                'balanced': "You are the fulcrum of the arena, the calm in the eye of the storm. Your balanced approach brings harmony to the chaos. The stars see a great destiny for you, one that will shape the future of the Coliseum itself."
+            }
+        }
+
+        if zodiac_sign in horoscope_templates:
+            return horoscope_templates[zodiac_sign][playstyle]
+        else:
+            return "The stars are silent on this sign. Choose from Leo, Taurus, Scorpio, or Libra."
+
 # Usage:
 # brain = AIChaosBrain()
-# brain.load_memory()
-# print(brain.throw_twist())
-# print(brain.tarot_reading())
+# brain.learn_move('attack')
+# brain.learn_move('attack')
+# brain.learn_move('attack')
+# print(brain.get_horoscope('Leo'))
