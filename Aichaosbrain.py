@@ -45,6 +45,10 @@ class AIChaosBrain:
         self.save_memory()
 
     def tarot_reading(self):
+        # The Spark of Prophecy
+        if random.randint(1, 10) == 1:
+            return "PROPHECY: The cards have spoken! A great quest awaits you. Use sound therapy to attune to the celestial frequency and uncover the first step."
+
         cards = {
             'The Fool': 'A new beginning, a leap of faith.',
             'The Magician': 'You have the power to manifest your desires.',
@@ -147,6 +151,10 @@ class AIChaosBrain:
                 'balanced': "You are the master of dreams, your movements a beautiful and deadly illusion. Your intuition guides you through the chaos of battle. The stars see a prophecy unfolding, one where you are the hero of a story yet to be written."
             }
         }
+
+        # The Spark of Prophecy
+        if random.randint(1, 10) == 1:
+            return "PROPHECY: The stars have aligned! A great quest awaits you. Meditate to decipher the symbol that has appeared in your mind's eye."
 
         if self.birth_chart:
             zodiac_sign = self.birth_chart['sun']

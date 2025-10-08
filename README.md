@@ -36,6 +36,7 @@ This isn't a game. It's a world. And it's alive.
     *   **Dynamic Horoscopes:** Ask the "magic mirror" for a glimpse into your destiny. The AI analyzes your recent in-game actions to generate a unique, personalized horoscope for all 12 zodiac signs. An aggressive player will receive a different prophecy than a defensive one.
     *   **Tarot Readings:** The AI can deal a tarot card, offering cryptic insights into your journey.
     *   **Birth Charts:** Set up your birth chart for even deeper, more personalized cosmic guidance.
+    *   **The Oracle's Quest:** The stars and the cards may do more than offer guidance; they may reveal a prophecy. This will trigger a monumental, multi-stage quest that will test your mind, body, and spirit. Use the wellness activities to decipher clues, unlock ancient secrets, and earn legendary, tangible rewards.
 *   **The Great Bestiary:** Swap a single coin for a beast, and a lion is suddenly yours. Mounts are endless: lions, bulls, phoenixes, and serpents. Or, ride one of the five legendary knights themselves.
 *   **Community & Chaos:**
     *   **Total Fails Reel:** Your epic faceplant is replayed for all to see, ending with a bang of cosmic confetti.

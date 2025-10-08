@@ -1,6 +1,8 @@
 import random
+import copy
 from Wellness import Wellness
 from Aichaosbrain import AIChaosBrain
+from OracleQuest import available_quests
 
 class ModesManager:
     def __init__(self):
@@ -11,6 +13,7 @@ class ModesManager:
         self.wellness = Wellness()
         self.brain = AIChaosBrain()
         self.brain.load_memory() # Load AI memory on init
+        self.active_quest = None
 
     def unlock_self_mode(self, payment_method, amount):
         if payment_method == 'xp' and self.xp >= amount:
@@ -35,7 +38,7 @@ class ModesManager:
             elif mode == 'raid':
                 return "Raid villages! Steal loot, burn down – haptics make walls crack."
             elif mode == 'self':
-                return "Self Mode activated. Available activities: meditate, breathe, sound_therapy, cleanse, tarot."
+                return "Self Mode activated. Available activities: meditate, breathe, sound_therapy, cleanse, tarot, horoscope."
             else:
                 return "Hunter Mode: Self-pick teams. Hunt or be hunted."
         return "Invalid mode – chaos only!"
@@ -44,18 +47,43 @@ class ModesManager:
         if self.current_mode != 'self':
             return "You must be in Self Mode to perform wellness activities."
 
+        # Perform the activity
+        activity_result = ""
         if activity == 'meditate':
-            return self.wellness.meditation()
+            activity_result = self.wellness.meditation()
         elif activity == 'breathe':
-            return self.wellness.breathing_exercise()
+            activity_result = self.wellness.breathing_exercise()
         elif activity == 'sound_therapy':
-            return self.wellness.sound_therapy()
+            activity_result = self.wellness.sound_therapy()
         elif activity == 'cleanse':
-            return self.wellness.cleansing()
+            activity_result = self.wellness.cleansing()
         elif activity == 'tarot':
-            return self.brain.tarot_reading()
+            activity_result = self.brain.tarot_reading()
+        elif activity == 'horoscope':
+            activity_result = self.brain.get_horoscope()
         else:
             return "Unknown wellness activity."
+
+        # Check if the result is a prophecy that starts a quest
+        if isinstance(activity_result, str) and activity_result.startswith("PROPHECY"):
+            quest_key = None
+            if "meditate to decipher the symbol" in activity_result:
+                quest_key = "celestial_armor"
+
+            if quest_key and (not self.active_quest or self.active_quest.name != available_quests[quest_key].name):
+                self.active_quest = copy.deepcopy(available_quests[quest_key])
+                return f"A new quest has begun! {self.active_quest.get_current_stage_description()}"
+            return activity_result
+
+        # If no prophecy was triggered, check for quest advancement
+        if self.active_quest:
+            advancement_message = self.active_quest.attempt_to_advance(activity)
+            if advancement_message:
+                if self.active_quest.is_complete:
+                    self.active_quest = None
+                return advancement_message
+
+        return activity_result
 
     def earn_xp(self, action):
         xp_gain = random.randint(10, 50)
@@ -74,5 +102,11 @@ class ModesManager:
 # manager.earn_xp('fight')
 # print(manager.unlock_self_mode('xp', 100)) # Unlock with XP
 # print(manager.switch_mode('self'))
+# # Simulate getting a prophecy
+# print("You received a prophecy from a horoscope reading!")
+# manager.active_quest = copy.deepcopy(available_quests['celestial_armor'])
+# print(manager.active_quest.get_current_stage_description())
+# # Advance the quest
 # print(manager.do_wellness_activity('meditate'))
-# print(manager.do_wellness_activity('tarot'))
+# print(manager.do_wellness_activity('sound_therapy'))
+# print(manager.do_wellness_activity('cleanse'))
