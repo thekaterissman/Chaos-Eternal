@@ -1,4 +1,6 @@
 import random
+from Wellness import Wellness
+from Aichaosbrain import AIChaosBrain
 
 class ModesManager:
     def __init__(self):
@@ -6,6 +8,9 @@ class ModesManager:
         self.xp = 0
         self.shelters = []  # Persist builds
         self.self_mode_unlocked = False
+        self.wellness = Wellness()
+        self.brain = AIChaosBrain()
+        self.brain.load_memory() # Load AI memory on init
 
     def unlock_self_mode(self, payment_method, amount):
         if payment_method == 'xp' and self.xp >= amount:
@@ -30,10 +35,27 @@ class ModesManager:
             elif mode == 'raid':
                 return "Raid villages! Steal loot, burn down – haptics make walls crack."
             elif mode == 'self':
-                return "Self Mode: Breathe, meditate, reflect. Find your center."
+                return "Self Mode activated. Available activities: meditate, breathe, sound_therapy, cleanse, tarot."
             else:
                 return "Hunter Mode: Self-pick teams. Hunt or be hunted."
         return "Invalid mode – chaos only!"
+
+    def do_wellness_activity(self, activity):
+        if self.current_mode != 'self':
+            return "You must be in Self Mode to perform wellness activities."
+
+        if activity == 'meditate':
+            return self.wellness.meditation()
+        elif activity == 'breathe':
+            return self.wellness.breathing_exercise()
+        elif activity == 'sound_therapy':
+            return self.wellness.sound_therapy()
+        elif activity == 'cleanse':
+            return self.wellness.cleansing()
+        elif activity == 'tarot':
+            return self.brain.tarot_reading()
+        else:
+            return "Unknown wellness activity."
 
     def earn_xp(self, action):
         xp_gain = random.randint(10, 50)
@@ -52,5 +74,5 @@ class ModesManager:
 # manager.earn_xp('fight')
 # print(manager.unlock_self_mode('xp', 100)) # Unlock with XP
 # print(manager.switch_mode('self'))
-# print(manager.unlock_self_mode('paid', '$0.99')) # Or unlock with money
-# print(manager.switch_mode('self'))
+# print(manager.do_wellness_activity('meditate'))
+# print(manager.do_wellness_activity('tarot'))

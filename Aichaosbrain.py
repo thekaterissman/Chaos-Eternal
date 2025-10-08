@@ -6,6 +6,7 @@ class AIChaosBrain:
         self.player_moves = []  # Learns your quirks
         self.fears = ['sandstorm', 'floating_islands', 'dance_or_die']  # Your nightmares
         self.memory_file = 'chaos_memory.json'  # Persists across runs
+        self.birth_chart = None
 
     def learn_move(self, move):
         self.player_moves.append(move)
@@ -26,7 +27,7 @@ class AIChaosBrain:
             return "AI adapts: Basic roar from Leo. Feel it rumble."
 
     def save_memory(self):
-        memory = {'moves': self.player_moves}
+        memory = {'moves': self.player_moves, 'birth_chart': self.birth_chart}
         with open(self.memory_file, 'w') as f:
             json.dump(memory, f)
 
@@ -35,8 +36,13 @@ class AIChaosBrain:
             with open(self.memory_file, 'r') as f:
                 memory = json.load(f)
                 self.player_moves = memory.get('moves', [])
+                self.birth_chart = memory.get('birth_chart', None)
         except FileNotFoundError:
             pass  # Fresh chaos
+
+    def set_birth_chart(self, sun, moon, rising):
+        self.birth_chart = {'sun': sun, 'moon': moon, 'rising': rising}
+        self.save_memory()
 
     def tarot_reading(self):
         cards = {
@@ -66,7 +72,7 @@ class AIChaosBrain:
         card = random.choice(list(cards.keys()))
         return f"The AI deals a card: {card}. Its meaning: '{cards[card]}'"
 
-    def get_horoscope(self, zodiac_sign):
+    def get_horoscope(self, zodiac_sign=None):
         # Determine playstyle from recent moves
         attacks = self.player_moves.count('attack')
         dodges = self.player_moves.count('dodge')
@@ -142,14 +148,29 @@ class AIChaosBrain:
             }
         }
 
-        if zodiac_sign in horoscope_templates:
-            return horoscope_templates[zodiac_sign][playstyle]
+        if self.birth_chart:
+            zodiac_sign = self.birth_chart['sun']
+            moon_sign = self.birth_chart['moon']
+            rising_sign = self.birth_chart['rising']
+            if zodiac_sign in horoscope_templates:
+                horoscope = horoscope_templates[zodiac_sign][playstyle]
+                return f"With a {zodiac_sign} sun, a {moon_sign} moon, and a {rising_sign} rising, the celestial mirror reveals your path. {horoscope}"
+            else:
+                return "Your birth chart contains an unknown sign. The stars are clouded."
+        elif zodiac_sign:
+            if zodiac_sign in horoscope_templates:
+                return horoscope_templates[zodiac_sign][playstyle]
+            else:
+                return "The stars are silent on this sign. Please choose one of the 12 zodiac signs."
         else:
-            return "The stars are silent on this sign. Please choose one of the 12 zodiac signs."
+            return "Set your birth chart or provide a zodiac sign to receive a horoscope."
+
 
 # Usage:
 # brain = AIChaosBrain()
+# brain.load_memory()
+# brain.set_birth_chart('Leo', 'Aries', 'Scorpio')
 # brain.learn_move('attack')
 # brain.learn_move('attack')
 # brain.learn_move('attack')
-# print(brain.get_horoscope('Leo'))
+# print(brain.get_horoscope())

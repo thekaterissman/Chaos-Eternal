@@ -15,8 +15,12 @@ class Wellness:
     def cleansing(self):
         return "A holographic waterfall of light washes over you, cleansing away the chaos. You feel refreshed and renewed."
 
+    def meditation(self):
+        return "The world fades to a soft glow. The AI's voice is a gentle whisper, guiding you to a state of deep calm. Your thoughts settle like dust, and you find a new level of focus."
+
 # Usage:
 # wellness = Wellness()
 # print(wellness.breathing_exercise())
 # print(wellness.sound_therapy())
 # print(wellness.cleansing())
+# print(wellness.meditation())
