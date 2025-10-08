@@ -4,6 +4,7 @@ class Player:
         self.hp = 100
         self.speed = 10
         self.xp_rate = 1.0  # 1.0 is normal, 1.1 is a 10% bonus
+        self.has_learned_colors = False
 
     def take_damage(self, amount):
         self.hp -= amount

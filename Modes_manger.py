@@ -4,6 +4,8 @@ from Player import Player
 from Items import Items
 from MusicPlayer import MusicPlayer
 from Race import Race
+from ColorPuzzle import ColorPuzzle
+from Emotes import Emote
 
 class ModesManager:
     def __init__(self):
@@ -15,12 +17,19 @@ class ModesManager:
         self.items = Items(self.player)
         self.music_player = MusicPlayer()
         self.race = None
+        self.color_puzzle = ColorPuzzle(self.player)
+        self.emote_system = Emote()
 
     def switch_mode(self, mode):
-        modes = ['hunter', 'survival', 'pvp', 'raid', 'self', 'racing']
+        modes = ['hunter', 'survival', 'pvp', 'raid', 'self', 'racing', 'living_aura']
         if mode in modes:
             self.current_mode = mode
-            if mode == 'racing':
+            if mode == 'living_aura':
+                if self.player.has_learned_colors:
+                    return "You enter the living aura. The world is vibrant and full of color. Communication is through action, not words."
+                else:
+                    return "You enter the living aura. The world is a muted grayscale. You feel a strange pull towards a set of pedestals."
+            elif mode == 'racing':
                 self.race = Race(self.player)
                 return self.race.start_race()
             elif mode == 'survival':
@@ -80,10 +89,21 @@ class ModesManager:
             return result + " " + reward_message
         return result
 
+    def get_color_puzzle_description(self):
+        return self.color_puzzle.get_description()
+
+    def solve_color_puzzle(self, sequence):
+        return self.color_puzzle.attempt_solution(sequence)
+
+    def emote(self, emote_name):
+        if self.current_mode == 'living_aura':
+            return self.emote_system.perform_emote(emote_name)
+        return "You can only perform emotes in the living aura."
+
 # Usage examples
 # manager = ModesManager()
-# print(manager.switch_mode('racing'))
-# print(manager.use_item('Speed Boost')) # Need to acquire it first
-# print(manager.navigate_race())
-# print(manager.navigate_race('right'))
-# print(manager.navigate_race())
+# print(manager.switch_mode('living_aura'))
+# print(manager.get_color_puzzle_description())
+# print(manager.solve_color_puzzle(['Red', 'Green', 'Blue']))
+# print(manager.switch_mode('living_aura'))
+# print(manager.emote('wave'))
