@@ -54,20 +54,29 @@ class GeevesBrain:
             self.player_moves = self.player_moves[-10:]  # Keep most recent 10 moves
         self.save_memory()
 
-    def get_reaction(self):
+    def get_reaction(self, reputation_title="Unknown"):
         if len(self.player_moves) < 5:
             return "Geeves is observing your opening moves."
 
         recent_moves = self.player_moves[-5:]
         move_counts = Counter(recent_moves)
 
-        # --- Boon System ---
+        # --- Boon System (influenced by Reputation) ---
+        boon_chance = 0.3 # Base chance
+        if 'Noble Hero' in reputation_title:
+            boon_chance = 0.6 # Noble Heroes are favored
+        elif 'Dreaded Tyrant' in reputation_title:
+            boon_chance = 0.0 # Tyrants get no favors
+
         # Reward varied play
         if len(move_counts) >= 4: # Player used 4 or more unique moves
-            if random.random() < 0.3: # 30% chance to grant a boon
+            if random.random() < boon_chance:
                 boon_name = random.choice(self.boon_triggers['variety'])
                 response = random.choice(self.boons[boon_name]['responses'])
-                return f"Geeves rewards your versatility: {response}"
+                # Tailor the response based on reputation
+                if boon_chance > 0.5:
+                    return f"Geeves smiles upon your noble deeds: {response}"
+                return f"Geeves acknowledges your skill: {response}"
 
         # --- Twist System ---
         twist_category = None
