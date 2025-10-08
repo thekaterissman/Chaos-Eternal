@@ -5,14 +5,16 @@ class MetaPlayStore:
     Simulates an in-game marketplace where players can purchase power-ups,
     cosmetic effects, and other virtual items using in-game currency.
     """
-    def __init__(self, bestiary):
+    def __init__(self, bestiary, player_account):
         """
         Initializes the Meta Play Store.
 
         Args:
             bestiary (BeastBestiary): The instance of the bestiary, used to access the player's coin balance.
+            player_account (PlayerAccount): The player's account to manage upgrades.
         """
         self.bestiary = bestiary
+        self.player_account = player_account
         self.items = {
             'jetpack_refuel': {
                 'name': 'Jetpack Refuel',
@@ -37,6 +39,12 @@ class MetaPlayStore:
                 'cost': 8,
                 'type': 'cosmetic',
                 'description': 'Surrounds you with a shimmering, customizable holographic aura.'
+            },
+            'premium_access': {
+                'name': 'Premium Access Pass',
+                'cost': 50,
+                'type': 'account_upgrade',
+                'description': 'Unlocks access to the exclusive underground world, including the rave and racetrack.'
             }
         }
         print("Meta Play Store is now open for business!")
@@ -78,19 +86,28 @@ class MetaPlayStore:
         if self.bestiary.coins >= cost:
             self.bestiary.coins -= cost
 
-            # Add the item to the player's inventory if it's a power-up
+            # Handle the purchase based on the item type
             if item['type'] == 'power-up':
-                # Simplified: for now, we just add the item name. A real implementation
-                # would need to handle stacking or specific effects.
+                # Add the item to the player's inventory
                 if item_key in power_ups_inventory:
                     power_ups_inventory[item_key]['quantity'] += 1
                 else:
-                    # A more robust system would be needed for new power-up types
-                    # This is a simplification for the text-based game.
                     power_ups_inventory[item_key] = {'quantity': 1, 'effect': item['description']}
+                return (f"You purchased '{item['name']}' for {cost} coins. "
+                        f"You have {self.bestiary.coins} coins remaining.")
 
-            return (f"You purchased '{item['name']}' for {cost} coins. "
-                    f"You have {self.bestiary.coins} coins remaining.")
+            elif item['type'] == 'cosmetic':
+                # For cosmetics, we just confirm the purchase for this simulation
+                return (f"You have acquired the '{item['name']}' cosmetic effect for {cost} coins! "
+                        f"You have {self.bestiary.coins} coins remaining.")
+
+            elif item['type'] == 'account_upgrade':
+                # If it's an account upgrade, apply it to the player's account
+                upgrade_message = self.player_account.upgrade_to_premium()
+                return (f"Purchase successful! {upgrade_message} "
+                        f"You have {self.bestiary.coins} coins remaining.")
+
+            return f"Item '{item['name']}' purchased, but it has an unhandled type."
         else:
             return (f"You do not have enough coins to buy '{item['name']}'. "
                     f"You need {cost} coins, but you only have {self.bestiary.coins}.")

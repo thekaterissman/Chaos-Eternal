@@ -1,48 +1,51 @@
-# game.py - A demonstration of the game's features, including mood, visuals, and the store.
+# game.py - A demonstration of the premium access and racing features.
 
 from kate import Game
 
-def run_immersion_scenario():
+def run_premium_content_scenario():
     """
-    Runs a scenario to demonstrate the new immersion features:
-    - Player Mood
-    - Visuals Engine
-    - Meta Play Store
+    Runs a scenario to demonstrate the new premium features:
+    - Purchasing premium access from the store.
+    - Entering the exclusive underground world.
+    - Exploring the new areas.
+    - Participating in the new racing mode.
     """
-    print("--- Starting Simulation: Immersion and Monetization Demo ---")
+    print("--- Starting Simulation: Premium Content and Racing Demo ---")
 
-    # Initialize the main Game object, which now contains all subsystems
+    # Initialize the main Game object
     game = Game()
 
     print("\nInitial State:")
-    print(f"Player Mood: {game.player_mood.get_mood()}")
+    print(f"Player has premium access: {game.player_account.has_premium()}")
     print(f"Coins: {game.bestiary.coins}")
-    print(game.visuals_engine.get_visual_description())
     print("-" * 20)
 
     # A sequence of actions designed to showcase the new features
     actions = [
-        # 1. Start with an exciting action to change the mood
-        "fight",
+        # 1. Try to access premium content without a pass (and fail)
+        "enter underground",
 
-        # 2. Use an ability to keep the excitement high
-        "use ability",
+        # 2. Purchase the premium pass from the store
+        "store buy premium_access",
 
-        # 3. Experience a failure to see the mood shift to tense
-        "fail",
+        # 3. Try to access the content again (and succeed)
+        "enter underground",
 
-        # 4. Switch to a calm activity
-        "switch_mode therapy",
-        "reflect",
+        # 4. Explore the new underground world
+        "explore rave",
+        "explore forest",
+        "explore racetrack",
 
-        # 5. Interact with the new Meta Play Store
-        "store list",
-        "store buy shield_potion", # Player has 20 coins, can afford this (cost 10)
-        "store buy holographic_aura", # Player has 10 coins left, can afford this (cost 8)
-        "store buy jetpack_refuel", # Player has 2 coins left, cannot afford this (cost 5)
+        # 5. Switch to racing mode (only possible at the racetrack)
+        "switch_mode racing",
 
-        # 6. Use a newly purchased item
-        "use_powerup shield_potion"
+        # 6. Start and complete a race
+        "start race",
+        "drive",
+        "boost",
+        "drift",
+        "boost", # Go for the win
+        "boost"
     ]
 
     # Execute the actions one by one
@@ -55,8 +58,8 @@ def run_immersion_scenario():
     print(f"Final Score: {game.score}")
     print(f"Final Level: {game.level}")
     print(f"Final Coins: {game.bestiary.coins}")
-    print(f"Final Mood: {game.player_mood.get_mood()}")
+    print(f"Player has premium access: {game.player_account.has_premium()}")
 
 
 if __name__ == "__main__":
-    run_immersion_scenario()
+    run_premium_content_scenario()

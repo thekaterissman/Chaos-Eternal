@@ -8,6 +8,9 @@ from characters import Kate, Amya, Holly
 from Player_mood import PlayerMood
 from Visuals_engine import VisualsEngine
 from Meta_play_store import MetaPlayStore
+from Player_account import PlayerAccount
+from Underground_world import UndergroundWorld
+from Racing_system import RacingSystem
 
 
 class Game:
@@ -34,13 +37,18 @@ class Game:
         # Core systems
         self.modes_manager = ModesManager()
         self.ai_brain = AIChaosBrain(self.modes_manager)
-        self.bestiary = BeastBestiary(self.modes_manager, coins=20) # Start with more coins for the store
+        self.bestiary = BeastBestiary(self.modes_manager, coins=60) # Start with more coins for premium pass
         self.fails_system = GotchaFailsSystem()
 
-        # New systems for immersion and monetization
+        # Immersion and Monetization Systems
         self.player_mood = PlayerMood()
         self.visuals_engine = VisualsEngine(self.player_mood)
-        self.meta_store = MetaPlayStore(self.bestiary)
+        self.player_account = PlayerAccount()
+        self.meta_store = MetaPlayStore(self.bestiary, self.player_account)
+
+        # Premium Content Systems
+        self.underground_world = UndergroundWorld()
+        self.racing_system = RacingSystem()
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -147,6 +155,22 @@ class Game:
             except IndexError:
                 print("Invalid switch_character command. Use 'switch_character [name]'.")
 
+        elif player_action.startswith("enter underground"):
+            if self.player_account.has_premium():
+                print(self.underground_world.enter_world())
+            else:
+                print("Access denied. A Premium Access Pass is required. Visit the store.")
+
+        elif player_action.startswith("explore"):
+            if self.underground_world.get_current_location():
+                try:
+                    location = player_action.split(" ")[1]
+                    print(self.underground_world.explore_location(location))
+                except IndexError:
+                    print("Invalid command. Use 'explore [location]'.")
+            else:
+                print("You must be in the underground to explore it. Use 'enter underground' first.")
+
         elif player_action == "ride beast":
             # If the player doesn't own a beast, buy one for them for demo purposes.
             if not self.bestiary.owned_beasts:
@@ -171,14 +195,28 @@ class Game:
         elif player_action.startswith("switch_mode"):
             try:
                 mode = player_action.split(" ")[1]
-                mode_message = self.modes_manager.switch_mode(mode)
-                print(mode_message)
+                # Add check for racing mode prerequisites
+                if mode == 'racing' and self.underground_world.get_current_location() != 'racetrack':
+                    print("ACCESS DENIED: You must be at the racetrack to enter racing mode.")
+                else:
+                    mode_message = self.modes_manager.switch_mode(mode)
+                    print(mode_message)
             except IndexError:
                 print("Invalid switch_mode command. Use 'switch_mode [mode]'.")
 
+        elif player_action == "start race":
+            if self.modes_manager.current_mode == 'racing':
+                print(self.racing_system.start_race())
+            else:
+                print("You can only start a race when you are in 'racing' mode at the racetrack.")
+
         else:
             # Handle actions based on the current mode
-            if self.modes_manager.current_mode == 'therapy':
+            if self.modes_manager.current_mode == 'racing':
+                # Pass racing actions to the racing system
+                race_message = self.racing_system.handle_race_action(player_action)
+                print(race_message)
+            elif self.modes_manager.current_mode == 'therapy':
                 if player_action == 'create':
                     print("You sculpt a beautiful, shimmering star out of cosmic dust.")
                     self.score += 5

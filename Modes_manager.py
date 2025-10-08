@@ -19,7 +19,7 @@ class ModesManager:
         self.xp = 0
         self.shelters = []  # Persist builds
         self.difficulty = 'medium'  # Default difficulty
-        self.modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy']
+        self.modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy', 'racing']
 
     def set_difficulty(self, level):
         """
@@ -42,6 +42,8 @@ class ModesManager:
                 return "Survival Mode: Craft vines to blades. XP sticks – no resets!"
             elif mode == 'duel':
                 return "Duel Mode: 1v1 combat. May the best fighter win!"
+            elif mode == 'racing':
+                return "Racing Mode: Welcome to the underground circuit. Use 'boost' and 'drift' to win!"
             elif mode == 'pvp':
                 return "PvP: Teams self-select. Mix crews, clash in the arena!"
             elif mode == 'raid':
