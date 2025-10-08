@@ -8,7 +8,7 @@ class HelloWorld extends hz.Component<typeof HelloWorld> {
 
   // The 'start' event is called once when the component is initialized.
   start() {
-    console.log("Hello, Meta Horizon World!");
+    console.log("The Queendom is manifest.");
   }
 }
 
