@@ -1,0 +1,28 @@
+{% extends 'game/base.html' %}
+
+{% block content %}
+    <h2>Welcome to The Coliseum, {{ user.username }}!</h2>
+    <p>Character: {{ player_profile.character_name }} | Score: {{ player_profile.score }} | Level: {{ player_profile.level }}</p>
+
+    <hr>
+
+    <h3>What will you do?</h3>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="action" placeholder="e.g., fight, use ability, fail" required>
+        <button type="submit">Act</button>
+    </form>
+
+    <hr>
+
+    {% if messages %}
+        <h4>Turn Results:</h4>
+        <div>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Chaos awaits your command.</p>
+    {% endif %}
+{% endblock %}

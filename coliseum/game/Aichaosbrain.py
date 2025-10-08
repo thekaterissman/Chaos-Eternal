@@ -7,15 +7,13 @@ class AIChaosBrain:
     This class is designed to create surprising and dynamic gameplay moments
     based on the player's recent behavior.
     """
-    def __init__(self, modes_manager):
+    def __init__(self):
         """
         Initializes the AI brain.
-        - modes_manager: An instance of ModesManager to access difficulty settings.
         - player_moves: A list to store the player's recent actions.
         - fears: A list of potential "twist" events the AI can trigger.
         - memory_file: The file where the AI's "memory" of player moves is stored.
         """
-        self.modes_manager = modes_manager
         self.player_moves = []  # Learns your quirks
         self.fears = ['sandstorm', 'floating_islands', 'dance_or_die']  # Your nightmares
         self.memory_file = 'chaos_memory.json'  # Persists across runs
@@ -33,20 +31,12 @@ class AIChaosBrain:
 
     def throw_twist(self):
         """
-        Triggers a chaotic event based on the player's recent moves and difficulty.
+        Triggers a chaotic event based on the player's recent moves.
         If the player is defensive ('dodge'), the AI introduces a major environmental shift.
         Otherwise, it provides a more standard challenge.
         """
-        difficulty = self.modes_manager.difficulty
-        twist_sensitivity = 3  # Default for medium
-
-        if difficulty == 'easy':
-            twist_sensitivity = 2
-        elif difficulty == 'hard':
-            twist_sensitivity = 4
-
-        # If the player has dodged in their last `twist_sensitivity` moves, trigger a "fear".
-        if len(self.player_moves) >= twist_sensitivity and 'dodge' in self.player_moves[-twist_sensitivity:]:
+        # If the player has dodged in their last 3 moves, trigger a "fear".
+        if 'dodge' in self.player_moves[-3:]:  # If you're dodging a lot...
             twist = random.choice(self.fears)
             if twist == 'dance_or_die':
                 return "AI whispers: Dance for a shield, or get wrecked! Groove time."
