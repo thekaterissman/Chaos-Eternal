@@ -1,0 +1,22 @@
+{
+  "name": "living-lattice",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of the Living Lattice interactive world.",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "ts-node main.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "typescript",
+    "interactive",
+    "simulation"
+  ],
+  "author": "Co-Creators",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
