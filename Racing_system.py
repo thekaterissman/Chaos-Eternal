@@ -7,10 +7,14 @@ class RacingSystem:
     Manages the state and actions for the premium underground racing mode.
     The system is designed to provide a thrilling, text-based racing experience.
     """
-    def __init__(self):
+    def __init__(self, vehicle_customizer):
         """
         Initializes the Racing System.
+
+        Args:
+            vehicle_customizer (VehicleCustomizer): The player's vehicle for performance stats.
         """
+        self.vehicle_customizer = vehicle_customizer
         self.race_in_progress = False
         self.player_position = 0
         self.opponent_position = 0
@@ -44,16 +48,27 @@ class RacingSystem:
         # Opponent makes a move
         self.opponent_position += random.randint(15, 25)
 
+        # Get performance bonus from upgrades
+        bonus = self.vehicle_customizer.get_performance_bonus(action)
+
         # Player makes a move
         if action == 'boost':
-            self.player_position += random.randint(20, 30)
-            action_desc = "You hit the boost! HAPTICS: A powerful G-force presses you into your seat as the world outside blurs into streaks of light."
+            move_distance = int(random.randint(20, 30) * bonus)
+            self.player_position += move_distance
+            action_desc = (
+                "You hit the boost! HAPTICS: A powerful G-force presses you into your seat. The rush of air is a physical force, "
+                "and you feel the wind whip past your helmet as the psychedelic forest blurs into a tunnel of light."
+            )
         elif action == 'drift':
-            # Drifting is a bit slower but sets you up for a better position
-            self.player_position += random.randint(10, 18)
-            action_desc = "You execute a perfect drift around a sharp, crystalline corner. HAPTICS: You feel the tires lose and regain grip, a controlled slide that gains you precious inches."
+            move_distance = int(random.randint(10, 18) * bonus)
+            self.player_position += move_distance
+            action_desc = (
+                "You execute a perfect drift around a sharp, crystalline corner. HAPTICS: You feel the tires lose and regain grip, "
+                "a controlled slide that gains you precious inches, your upgraded tires holding the line beautifully."
+            )
         else: # A generic 'drive' action
-            self.player_position += random.randint(15, 22)
+            move_distance = int(random.randint(15, 22) * bonus)
+            self.player_position += move_distance
             action_desc = "You focus on the racing line, weaving through the track with precision."
 
         # Check for race end

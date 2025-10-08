@@ -11,6 +11,7 @@ from Meta_play_store import MetaPlayStore
 from Player_account import PlayerAccount
 from Underground_world import UndergroundWorld
 from Racing_system import RacingSystem
+from Vehicle_customizer import VehicleCustomizer
 
 
 class Game:
@@ -48,7 +49,8 @@ class Game:
 
         # Premium Content Systems
         self.underground_world = UndergroundWorld()
-        self.racing_system = RacingSystem()
+        self.vehicle_customizer = VehicleCustomizer(self.bestiary)
+        self.racing_system = RacingSystem(self.vehicle_customizer)
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -170,6 +172,26 @@ class Game:
                     print("Invalid command. Use 'explore [location]'.")
             else:
                 print("You must be in the underground to explore it. Use 'enter underground' first.")
+
+        elif player_action.startswith("customize") or player_action.startswith("upgrade"):
+            parts = player_action.split(" ")
+            command = parts[0]
+            if command == 'customize' and len(parts) == 3:
+                sub_command, value = parts[1], parts[2]
+                if sub_command == 'color':
+                    print(self.vehicle_customizer.customize_color(value))
+                elif sub_command == 'type':
+                    print(self.vehicle_customizer.set_vehicle_type(value))
+                else:
+                    print("Invalid command. Use 'customize color [color]' or 'customize type [type]'.")
+            elif command == 'upgrade' and len(parts) == 2:
+                part_name = parts[1]
+                print(self.vehicle_customizer.upgrade_part(part_name))
+            else:
+                print("Invalid vehicle command. Use 'customize color [color]', 'customize type [type]', or 'upgrade [part]'.")
+
+        elif player_action == "vehicle status":
+            print(self.vehicle_customizer.get_description())
 
         elif player_action == "ride beast":
             # If the player doesn't own a beast, buy one for them for demo purposes.

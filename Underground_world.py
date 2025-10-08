@@ -44,10 +44,10 @@ class UndergroundWorld:
         elif location_name == 'forest':
             self.current_location = 'forest'
             return (
-                "FOREST: You step out of the rave cavern into a vast, bioluminescent forest. The air is cool and "
-                "alive with the chirps of unseen, holographic creatures. HAPTICS: A gentle breeze, carrying the "
-                "scent of glowing moss, brushes against your skin. The long stretch of woods is lit by towering, "
-                "pulsing mushrooms and floating spores that glitter like dust in a moonbeam."
+                "PSYCHEDELIC FOREST: You step into a forest where reality itself seems to be breathing. "
+                "The trees are made of shimmering, crystalline light, their colors shifting in slow, hypnotic waves from emerald green to electric violet. "
+                "HAPTICS: The air hums with a strange energy, and you feel a gentle, rhythmic pulse against your skin that matches the glowing flora. "
+                "The path ahead is a river of liquid light, and the leaves of the trees dissolve into fractal patterns as you pass."
             )
         elif location_name == 'racetrack':
             self.current_location = 'racetrack'
