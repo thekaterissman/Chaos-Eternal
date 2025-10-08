@@ -8,6 +8,7 @@ class Kate:
     def __init__(self):
         self.name = "Kate"
         self.trait = "Fiery and Unstoppable"
+        self.is_vip = True
 
     def special_ability(self):
         """
@@ -23,6 +24,7 @@ class Amya:
     def __init__(self):
         self.name = "Amya"
         self.trait = "Calm and Strategic"
+        self.is_vip = False
 
     def special_ability(self):
         """
@@ -38,6 +40,7 @@ class Holly:
     def __init__(self):
         self.name = "Holly"
         self.trait = "Joyful and Unpredictable"
+        self.is_vip = False
 
     def special_ability(self):
         """
