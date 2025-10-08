@@ -22,7 +22,7 @@ class ModesManager:
         Switches the game to a new mode.
         Provides a descriptive message for the selected mode.
         """
-        modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy']
+        modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy', 'underwater_world']
         if mode in modes:
             self.current_mode = mode
             if mode == 'survival':
@@ -33,6 +33,8 @@ class ModesManager:
                 return "Raid villages! Steal loot, burn down – haptics make walls crack."
             elif mode == 'therapy':
                 return "Therapy Mode: A peaceful space. No combat, just creation and reflection."
+            elif mode == 'underwater_world':
+                return "Underwater World: Explore the abyss. No combat, just the beauty and danger of the deep."
             else:
                 return "Hunter Mode: Self-pick teams. Hunt or be hunted."
         return "Invalid mode – chaos only!"
