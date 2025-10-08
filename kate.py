@@ -5,6 +5,10 @@ from Beast_bestiary import BeastBestiary
 from Gotcha_fails_system import GotchaFailsSystem
 from Modes_manager import ModesManager
 from characters import Kate, Amya, Holly
+from Player_mood import PlayerMood
+from Visuals_engine import VisualsEngine
+from Meta_play_store import MetaPlayStore
+
 
 class Game:
     """
@@ -26,10 +30,17 @@ class Game:
             'whoopee_cushion': {'quantity': 1, 'effect': 'A comical *PFFFT* distracts your opponent.'}
         }
         self.character = character
-        self.ai_brain = AIChaosBrain()
-        self.bestiary = BeastBestiary(coins=10) # Start with some coins
-        self.fails_system = GotchaFailsSystem()
+
+        # Core systems
         self.modes_manager = ModesManager()
+        self.ai_brain = AIChaosBrain(self.modes_manager)
+        self.bestiary = BeastBestiary(self.modes_manager, coins=20) # Start with more coins for the store
+        self.fails_system = GotchaFailsSystem()
+
+        # New systems for immersion and monetization
+        self.player_mood = PlayerMood()
+        self.visuals_engine = VisualsEngine(self.player_mood)
+        self.meta_store = MetaPlayStore(self.bestiary)
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -89,7 +100,11 @@ class Game:
             self.score += 50
             print(f"** Score +50 for AI twist! Total Score: {self.score} **")
 
-        # 3. Handle specific, simulated actions
+        # 3. Update player mood based on the action before handling it
+        self.player_mood.update_mood(player_action)
+        print(self.visuals_engine.get_visual_description())
+
+        # 4. Handle specific, simulated actions
         if player_action == "use ability":
             ability_message = self.character.special_ability()
             print(ability_message)
@@ -108,6 +123,21 @@ class Game:
                     print(f"No {powerup_name} power-up available!")
             except IndexError:
                 print("Invalid command. Use 'use_powerup [name]'.")
+
+        elif player_action.startswith("store"):
+            parts = player_action.split(" ")
+            if len(parts) > 1:
+                if parts[1] == 'list':
+                    print(self.meta_store.list_items())
+                elif parts[1] == 'buy' and len(parts) > 2:
+                    item_key = parts[2]
+                    buy_message = self.meta_store.buy_item(item_key, self.power_ups)
+                    print(buy_message)
+                else:
+                    print("Invalid store command. Use 'store list' or 'store buy [item_key]'.")
+            else:
+                print("Invalid store command. Use 'store list' or 'store buy [item_key]'.")
+
 
         elif player_action.startswith("switch_character"):
             try:
@@ -166,8 +196,12 @@ class Game:
                 self.score += 10
                 print(f"** Score +10 for action! Total Score: {self.score} **")
 
-        # 4. Check for level up at the end of the turn
+        # 5. Check for level up at the end of the turn
         self.check_level_up()
+
+        # 6. Final mood update and visual description for the end of the turn
+        self.player_mood.update_mood(player_action) # Update mood again after all effects
+        print(self.visuals_engine.get_visual_description())
 
         print("--- Turn End ---")
 

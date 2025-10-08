@@ -1,91 +1,62 @@
-from Modes_manager import ModesManager
-from Aichaosbrain import AIChaosBrain
-from Beast_bestiary import BeastBestiary
-from characters import Kate
+# game.py - A demonstration of the game's features, including mood, visuals, and the store.
 
-def run_game_scenario():
+from kate import Game
+
+def run_immersion_scenario():
     """
-    Runs a scenario to demonstrate the difficulty settings affecting the game.
+    Runs a scenario to demonstrate the new immersion features:
+    - Player Mood
+    - Visuals Engine
+    - Meta Play Store
     """
-    print("--- Initializing Game ---")
-    modes_manager = ModesManager()
-    ai_brain = AIChaosBrain(modes_manager)
-    # Start with more coins to test purchases
-    bestiary = BeastBestiary(modes_manager, coins=20)
-    player = Kate()
+    print("--- Starting Simulation: Immersion and Monetization Demo ---")
 
-    print(f"Welcome, {player.name}! Your trait: {player.trait}")
-    print(f"Initial mode: {modes_manager.current_mode}")
-    print(f"Initial difficulty: {modes_manager.difficulty}")
-    print(f"Initial coins: {bestiary.coins}")
+    # Initialize the main Game object, which now contains all subsystems
+    game = Game()
+
+    print("\nInitial State:")
+    print(f"Player Mood: {game.player_mood.get_mood()}")
+    print(f"Coins: {game.bestiary.coins}")
+    print(game.visuals_engine.get_visual_description())
     print("-" * 20)
 
-    # --- SCENARIO 1: MEDIUM DIFFICULTY (DEFAULT) ---
-    print("\n--- Scenario: Medium Difficulty ---")
-    print(f"Current difficulty: {modes_manager.difficulty}")
+    # A sequence of actions designed to showcase the new features
+    actions = [
+        # 1. Start with an exciting action to change the mood
+        "fight",
 
-    # Demonstrate AI twist
-    print("\nSimulating player dodging...")
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('dodge')
-    # On medium, this is not enough to trigger a twist (needs 3 dodges in a row)
-    print("AI response (1 dodge):", ai_brain.throw_twist())
-    ai_brain.learn_move('dodge')
-    ai_brain.learn_move('dodge')
-    print("AI response (3 dodges):", ai_brain.throw_twist())
+        # 2. Use an ability to keep the excitement high
+        "use ability",
 
-    # Demonstrate beast cost
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
-    print("-" * 20)
+        # 3. Experience a failure to see the mood shift to tense
+        "fail",
 
+        # 4. Switch to a calm activity
+        "switch_mode therapy",
+        "reflect",
 
-    # --- SCENARIO 2: EASY DIFFICULTY ---
-    print("\n--- Scenario: Easy Difficulty ---")
-    modes_manager.set_difficulty('easy')
-    print(f"Difficulty changed to: {modes_manager.difficulty}")
-    ai_brain.player_moves = [] # Reset moves for a clean test
-    bestiary.coins = 20 # Reset coins
+        # 5. Interact with the new Meta Play Store
+        "store list",
+        "store buy shield_potion", # Player has 20 coins, can afford this (cost 10)
+        "store buy holographic_aura", # Player has 10 coins left, can afford this (cost 8)
+        "store buy jetpack_refuel", # Player has 2 coins left, cannot afford this (cost 5)
 
-    # Demonstrate AI twist (less sensitive)
-    print("\nSimulating player dodging (less sensitive)...")
-    ai_brain.learn_move('dodge')
-    # On easy, 1 dodge is not enough to trigger a twist (needs 2)
-    print("AI response (1 dodge):", ai_brain.throw_twist())
-    ai_brain.learn_move('dodge')
-    print("AI response (2 dodges):", ai_brain.throw_twist())
+        # 6. Use a newly purchased item
+        "use_powerup shield_potion"
+    ]
 
-    # Demonstrate beast cost (cheaper)
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    # Cost should be 10 * 0.8 = 8
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
-    print("-" * 20)
+    # Execute the actions one by one
+    for action in actions:
+        game.game_loop_turn(action)
+        # A small divider to make the turn-by-turn output clearer
+        print("-" * 20)
 
-    # --- SCENARIO 3: HARD DIFFICULTY ---
-    print("\n--- Scenario: Hard Difficulty ---")
-    modes_manager.set_difficulty('hard')
-    print(f"Difficulty changed to: {modes_manager.difficulty}")
-    ai_brain.player_moves = [] # Reset moves
-    bestiary.coins = 20 # Reset coins
-
-    # Demonstrate AI twist (more sensitive)
-    print("\nSimulating player dodging (more sensitive)...")
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('dodge')
-    # On hard, even one dodge in the last 4 moves is enough for a twist
-    print("AI response (1 dodge in last 4):", ai_brain.throw_twist())
-
-    # Demonstrate beast cost (more expensive)
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    # Cost should be 10 * 1.5 = 15
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
+    print("\n--- Simulation Ended ---")
+    print(f"Final Score: {game.score}")
+    print(f"Final Level: {game.level}")
+    print(f"Final Coins: {game.bestiary.coins}")
+    print(f"Final Mood: {game.player_mood.get_mood()}")
 
 
 if __name__ == "__main__":
-    run_game_scenario()
+    run_immersion_scenario()
