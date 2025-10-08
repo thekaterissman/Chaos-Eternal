@@ -73,10 +73,20 @@ class ModesManager:
         return self.items.unequip_item(item_name)
 
     def play_music(self, station_name):
-        return self.music_player.select_station(station_name)
+        self.player.reset_modifiers()
+        message = self.music_player.select_station(station_name)
+        bonus = self.music_player.get_current_bonus()
+        if bonus:
+            self.player.apply_modifier(bonus["stat"], bonus["amount"])
+        return message
 
     def stop_music(self):
+        self.player.reset_modifiers()
         return self.music_player.stop_music()
+
+    def attack(self, target_name):
+        damage_message = self.player.deal_damage(20) # Base damage of 20
+        return f"{damage_message} on {target_name}!"
 
     def navigate_race(self, action=None):
         if self.current_mode != 'racing' or not self.race:
@@ -99,11 +109,3 @@ class ModesManager:
         if self.current_mode == 'living_aura':
             return self.emote_system.perform_emote(emote_name)
         return "You can only perform emotes in the living aura."
-
-# Usage examples
-# manager = ModesManager()
-# print(manager.switch_mode('living_aura'))
-# print(manager.get_color_puzzle_description())
-# print(manager.solve_color_puzzle(['Red', 'Green', 'Blue']))
-# print(manager.switch_mode('living_aura'))
-# print(manager.emote('wave'))

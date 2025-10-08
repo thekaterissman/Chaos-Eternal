@@ -5,6 +5,8 @@ class Player:
         self.speed = 10
         self.xp_rate = 1.0  # 1.0 is normal, 1.1 is a 10% bonus
         self.has_learned_colors = False
+        self.damage_modifier = 1.0
+        self.heal_modifier = 1.0
 
     def take_damage(self, amount):
         self.hp -= amount
@@ -13,10 +15,15 @@ class Player:
         return f"{self.name} takes {amount} damage! HP is now {self.hp}."
 
     def heal(self, amount):
-        self.hp += amount
+        final_heal = int(amount * self.heal_modifier)
+        self.hp += final_heal
         if self.hp > 100:
             self.hp = 100
-        return f"{self.name} heals for {amount} HP! HP is now {self.hp}."
+        return f"{self.name} heals for {final_heal} HP! HP is now {self.hp}."
+
+    def deal_damage(self, base_damage):
+        final_damage = int(base_damage * self.damage_modifier)
+        return f"{self.name} attacks for {final_damage} damage!"
 
     def increase_speed(self, amount):
         self.speed += amount
@@ -35,3 +42,13 @@ class Player:
     def decrease_xp_rate(self, rate_decrease):
         self.xp_rate -= rate_decrease
         return f"{self.name}'s XP rate decreased to {self.xp_rate:.2f}x."
+
+    def apply_modifier(self, stat, amount):
+        if stat == "damage":
+            self.damage_modifier = amount
+        elif stat == "heal":
+            self.heal_modifier = amount
+
+    def reset_modifiers(self):
+        self.damage_modifier = 1.0
+        self.heal_modifier = 1.0
