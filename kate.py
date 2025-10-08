@@ -14,6 +14,9 @@ class Game:
     def __init__(self, character=Kate()):
         """
         Initializes the game by setting up all the core systems.
+
+        Args:
+            character (Character, optional): The player character. Defaults to Kate().
         """
         print("The Coliseum rips free, floating. The Chaos Queens rise.")
         self.score = 0
@@ -33,6 +36,15 @@ class Game:
         print(f"Welcome, {self.character.name}, the {self.character.trait} Queen. Chaos awaits.")
 
     def switch_character(self, character_name):
+        """
+        Switches the player's character.
+
+        Args:
+            character_name (str): The name of the character to switch to (e.g., 'kate', 'amya', 'holly').
+
+        Returns:
+            str: A message indicating the result of the switch.
+        """
         if character_name.lower() == 'kate':
             self.character = Kate()
         elif character_name.lower() == 'amya':
@@ -44,7 +56,10 @@ class Game:
         return f"Switched to {self.character.name}, the {self.character.trait} Queen."
 
     def check_level_up(self):
-        """Checks if the player has enough XP to level up."""
+        """
+        Checks if the player has earned enough XP to level up and handles the level-up process.
+        A simple leveling system is used where each level requires 100 XP.
+        """
         # Simple leveling system: 100 XP per level
         if self.modes_manager.xp >= self.level * 100:
             self.level += 1
@@ -58,6 +73,9 @@ class Game:
         """
         Simulates a single turn of the game based on a player's action.
         This is a simplified game loop for this text-based simulation.
+
+        Args:
+            player_action (str): The action taken by the player (e.g., 'fight', 'use ability').
         """
         print(f"\n--- Your action: {player_action} ---")
 
