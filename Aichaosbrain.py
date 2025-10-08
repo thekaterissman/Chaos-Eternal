@@ -1,5 +1,5 @@
 import random
-import json  # For saving "memories"
+import json
 
 class AIChaosBrain:
     """
@@ -13,31 +13,52 @@ class AIChaosBrain:
         - player_moves: A list to store the player's recent actions.
         - fears: A list of potential "twist" events the AI can trigger.
         - memory_file: The file where the AI's "memory" of player moves is stored.
+        - chaos_level: A dynamic measure of game intensity.
+        - event_history: A log of past twists to avoid repetition.
         """
-        self.player_moves = []  # Learns your quirks
-        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die']  # Your nightmares
-        self.memory_file = 'chaos_memory.json'  # Persists across runs
+        self.player_moves = []
+        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die', 'meteor_shower', 'gravity_inversion']
+        self.memory_file = 'chaos_memory.json'
+        self.chaos_level = 1
+        self.event_history = []
 
     def learn_move(self, move):
         """
-        Records a player's move and saves it to memory.
-        This allows the AI to "learn" from the player's actions.
+        Records a player's move, adjusts chaos, and saves it to memory.
+        Aggressive moves increase the chaos level, while passive ones decrease it.
         """
         self.player_moves.append(move)
-        # Keep only the 10 most recent moves to stay adaptive.
+        if move in ['fight', 'raid', 'attack']:
+            self.chaos_level += 1
+        elif move in ['dodge', 'reflect', 'create']:
+            self.chaos_level = max(1, self.chaos_level - 1)
+
         if len(self.player_moves) > 10:
-            self.player_moves = self.player_moves[-10:]  # Keep recent
+            self.player_moves = self.player_moves[-10:]
         self.save_memory()
 
     def throw_twist(self):
         """
-        Triggers a chaotic event based on the player's recent moves.
-        If the player is defensive ('dodge'), the AI introduces a major environmental shift.
-        Otherwise, it provides a more standard challenge.
+        Triggers a chaotic event based on player moves and chaos level.
+        Higher chaos levels unlock more intense and unpredictable twists.
+        The AI avoids repeating the same twist immediately.
         """
-        # If the player has dodged in their last 3 moves, trigger a "fear".
-        if 'dodge' in self.player_moves[-3:]:  # If you're dodging a lot...
-            twist = random.choice(self.fears)
+        # Filter out the last event to ensure variety
+        available_fears = [fear for fear in self.fears if fear not in self.event_history[-1:]]
+
+        # More intense twists are unlocked at higher chaos levels
+        if self.chaos_level >= 5:
+            twist = random.choice(available_fears)
+            self.event_history.append(twist)
+            if twist == 'meteor_shower':
+                return "A meteor shower rains down! Haptic impacts rattle your teeth."
+            elif twist == 'gravity_inversion':
+                return "Gravity inverts! The world flips, and your stomach lurches."
+
+        # Standard twists for mid-level chaos
+        if 'dodge' in self.player_moves[-3:]:
+            twist = random.choice(available_fears)
+            self.event_history.append(twist)
             if twist == 'dance_or_die':
                 return "AI whispers: Dance for a shield, or get wrecked! Groove time."
             elif twist == 'sandstorm':
@@ -45,28 +66,27 @@ class AIChaosBrain:
             else:
                 return "Floating islands spawn—gravity flips! Stomach drop incoming."
         else:
-            # Standard AI response for less defensive players.
             return "AI adapts: Basic roar from Leo. Feel it rumble."
 
     def save_memory(self):
         """
-        Saves the player's move history to a JSON file for persistence.
-        This allows the AI to remember player behavior across game sessions.
+        Saves player moves and chaos level to a JSON file for persistence.
         """
-        memory = {'moves': self.player_moves}
+        memory = {'moves': self.player_moves, 'chaos_level': self.chaos_level, 'event_history': self.event_history}
         with open(self.memory_file, 'w') as f:
             json.dump(memory, f)
 
     def load_memory(self):
         """
-        Loads the player's move history from the JSON file.
-        This enables the AI to recall past interactions at the start of a new session.
+        Loads player data from the JSON file, including moves, chaos level, and history.
         """
         try:
             with open(self.memory_file, 'r') as f:
                 memory = json.load(f)
                 self.player_moves = memory.get('moves', [])
+                self.chaos_level = memory.get('chaos_level', 1)
+                self.event_history = memory.get('event_history', [])
         except FileNotFoundError:
-            pass  # Fresh chaos, no memory file found.
+            pass
 
 # Usage: brain = AIChaosBrain(); brain.load_memory(); print(brain.throw_twist())

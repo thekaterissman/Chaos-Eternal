@@ -2,58 +2,70 @@ import random
 
 class ModesManager:
     """
-    Manages the different game modes, player XP, and persistent creations.
-    This class allows for dynamic switching between modes and tracks player
-    progression that carries across different gameplay experiences.
+    Manages game modes, including mixing them to create unique synergies.
+    This class tracks player progression and allows for dynamic, interconnected
+    gameplay experiences.
     """
     def __init__(self):
         """
         Initializes the Modes Manager.
-        - current_mode: The active game mode.
-        - xp: The player's experience points, which are persistent.
-        - shelters: A list representing player-built structures in survival mode.
+        - active_modes: A set of currently active game modes.
+        - xp: The player's persistent experience points.
+        - shelters: A list of player-built structures in survival mode.
+        - mode_synergies: A dictionary defining the outcomes of mixing modes.
         """
-        self.current_mode = 'hunter'
+        self.active_modes = {'hunter'}
         self.xp = 0
-        self.shelters = []  # Persist builds
+        self.shelters = []
+        self.mode_synergies = {
+            ('hunter', 'raid'): "Hunter's Raid: Track and steal from opponents with enhanced stealth.",
+            ('survival', 'pvp'): "Survival PvP: Craft weapons on the fly in a fight to the death.",
+            ('therapy', 'hunter'): "Mindful Hunter: Pacify beasts instead of killing them for unique rewards."
+        }
 
     def switch_mode(self, mode):
         """
-        Switches the game to a new mode.
+        Switches the game to a new mode, clearing previous modes.
         Provides a descriptive message for the selected mode.
         """
-        modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy']
-        if mode in modes:
-            self.current_mode = mode
-            if mode == 'survival':
-                return "Survival Mode: Craft vines to blades. XP sticks – no resets!"
-            elif mode == 'pvp':
-                return "PvP: Teams self-select. Mix crews, clash in the arena!"
-            elif mode == 'raid':
-                return "Raid villages! Steal loot, burn down – haptics make walls crack."
-            elif mode == 'therapy':
-                return "Therapy Mode: A peaceful space. No combat, just creation and reflection."
-            else:
-                return "Hunter Mode: Self-pick teams. Hunt or be hunted."
-        return "Invalid mode – chaos only!"
-
-    def earn_xp(self, action):
-        """
-        Awards XP to the player for completing an action.
-        XP is a core progression mechanic that boosts skills across all modes.
-        In survival mode, actions can also result in building persistent structures.
-        """
-        xp_gain = random.randint(10, 50)
-        self.xp += xp_gain
-        if self.current_mode == 'survival':
-            self.shelters.append('new_shelter')  # Build persists
-        return f"XP +{xp_gain}! Total: {self.xp}. Boosts Coliseum skills."
+        self.active_modes = {mode}
+        if mode == 'survival':
+            return "Survival Mode: Craft vines to blades. XP sticks – no resets!"
+        elif mode == 'pvp':
+            return "PvP: Teams self-select. Mix crews, clash in the arena!"
+        else:
+            return "Hunter Mode: Self-pick teams. Hunt or be hunted."
 
     def mix_modes(self, mode1, mode2):
         """
-        Simulates the mixing of two game modes to create a unique experience.
-        This reflects the dynamic, player-driven nature of the game world.
+        Mixes two modes to create a unique, synergistic experience.
+        The outcome is determined by predefined synergies.
         """
-        return f"Mixed: {mode1} + {mode2} = Pure dive! Remake world in 5s."
+        self.active_modes = {mode1, mode2}
+        synergy_key = tuple(sorted((mode1, mode2)))
+        if synergy_key in self.mode_synergies:
+            return self.mode_synergies[synergy_key]
+        return f"Mixed: {mode1} + {mode2} = Pure chaos! The world remakes itself in 5s."
+
+    def earn_xp(self, action):
+        """
+        Awards XP for actions, with bonuses for synergistic play.
+        If active modes have a synergy, the player earns bonus XP.
+        """
+        xp_gain = random.randint(10, 50)
+        synergy_bonus = 0
+
+        synergy_key = tuple(sorted(self.active_modes))
+        if len(self.active_modes) > 1 and synergy_key in self.mode_synergies:
+            synergy_bonus = 25  # Bonus for playing in a mixed-mode state
+            xp_gain += synergy_bonus
+
+        self.xp += xp_gain
+        if 'survival' in self.active_modes:
+            self.shelters.append('new_shelter')
+
+        if synergy_bonus > 0:
+            return f"Synergy Bonus! XP +{xp_gain}! Total: {self.xp}."
+        return f"XP +{xp_gain - synergy_bonus}! Total: {self.xp}. Boosts Coliseum skills."
 
 # Usage: manager = ModesManager(); print(manager.switch_mode('survival')); print(manager.earn_xp('raid'))

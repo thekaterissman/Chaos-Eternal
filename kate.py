@@ -1,10 +1,12 @@
 # kate.py - The central game logic for The Coliseum: Chaos Eternal
 
+import random
 from Aichaosbrain import AIChaosBrain
 from Beast_bestiary import BeastBestiary
 from Gotcha_fails_system import GotchaFailsSystem
 from Modes_manager import ModesManager
 from characters import Kate, Amya, Holly
+from world_events import WorldEvents
 
 class Game:
     """
@@ -27,6 +29,7 @@ class Game:
         self.bestiary = BeastBestiary(coins=10) # Start with some coins
         self.fails_system = GotchaFailsSystem()
         self.modes_manager = ModesManager()
+        self.world_events = WorldEvents()
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -130,7 +133,7 @@ class Game:
 
         else:
             # Handle actions based on the current mode
-            if self.modes_manager.current_mode == 'therapy':
+            if 'therapy' in self.modes_manager.active_modes:
                 if player_action == 'create':
                     print("You sculpt a beautiful, shimmering star out of cosmic dust.")
                     self.score += 5
@@ -148,29 +151,43 @@ class Game:
                 self.score += 10
                 print(f"** Score +10 for action! Total Score: {self.score} **")
 
-        # 4. Check for level up at the end of the turn
+        # 4. Check for a random world event
+        if random.random() < 0.2: # 20% chance of a world event
+            event = self.world_events.trigger_random_event()
+            print(f"**WORLD EVENT: {event['description']}**")
+            if event['effect'] == 'xp_boost':
+                self.modes_manager.xp += 100
+                print("** All players receive a 100 XP boost! **")
+
+        # 5. Check for level up at the end of the turn
         self.check_level_up()
 
         print("--- Turn End ---")
 
 
 if __name__ == '__main__':
-    # This is a simple demonstration of how the Game class orchestrates the systems.
-    # In a real application, this would be driven by actual player input.
-    print("--- Starting Game Simulation ---")
-    game = Game() # Starts with Kate by default
+    print("--- Starting Enhanced Game Simulation ---")
+    game = Game()
 
-    # A predefined sequence of actions to simulate gameplay
-    actions = [
-        "fight",
-        "switch_mode therapy",
-        "create",
-        "reflect",
-        "fight", # Should have a different outcome in therapy mode
-        "switch_mode hunter",
-        "fight" # Should be back to normal
-    ]
-    for action in actions:
+    # Demonstrate enhanced AI and chaos level
+    print("\n--- Testing AI and Chaos ---")
+    actions_ai = ["fight", "fight", "fight", "fight", "fight", "dodge"]
+    for action in actions_ai:
         game.game_loop_turn(action)
 
-    print("\n--- Game Simulation Ended ---")
+    # Demonstrate mode mixing and synergies
+    print("\n--- Testing Mode Mixing ---")
+    game.modes_manager.mix_modes('hunter', 'raid')
+    game.game_loop_turn("fight")
+
+    # Demonstrate world events
+    print("\n--- Forcing a World Event for Testing ---")
+    # To guarantee a world event for the test, we'll temporarily bypass the random chance
+    event = game.world_events.trigger_random_event()
+    print(f"**WORLD EVENT: {event['description']}**")
+    if event['effect'] == 'xp_boost':
+        game.modes_manager.xp += 100
+        print("** All players receive a 100 XP boost! **")
+
+
+    print("\n--- Enhanced Game Simulation Ended ---")
