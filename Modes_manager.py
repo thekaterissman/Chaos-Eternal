@@ -13,11 +13,13 @@ class ModesManager:
         - xp: The player's experience points, which are persistent.
         - shelters: A list representing player-built structures in survival mode.
         - difficulty: The game's difficulty level.
+        - modes: A list of available game modes.
         """
         self.current_mode = 'hunter'
         self.xp = 0
         self.shelters = []  # Persist builds
         self.difficulty = 'medium'  # Default difficulty
+        self.modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy', 'racing']
 
     def set_difficulty(self, level):
         """
@@ -34,11 +36,14 @@ class ModesManager:
         Switches the game to a new mode.
         Provides a descriptive message for the selected mode.
         """
-        modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy']
-        if mode in modes:
+        if mode in self.modes:
             self.current_mode = mode
             if mode == 'survival':
                 return "Survival Mode: Craft vines to blades. XP sticks – no resets!"
+            elif mode == 'duel':
+                return "Duel Mode: 1v1 combat. May the best fighter win!"
+            elif mode == 'racing':
+                return "Racing Mode: Welcome to the underground circuit. Use 'boost' and 'drift' to win!"
             elif mode == 'pvp':
                 return "PvP: Teams self-select. Mix crews, clash in the arena!"
             elif mode == 'raid':

@@ -1,91 +1,64 @@
-from Modes_manager import ModesManager
-from Aichaosbrain import AIChaosBrain
-from Beast_bestiary import BeastBestiary
-from characters import Kate
+# game.py - A demonstration of vehicle customization and racing.
 
-def run_game_scenario():
+from kate import Game
+
+def run_vehicle_customization_scenario():
     """
-    Runs a scenario to demonstrate the difficulty settings affecting the game.
+    Runs a scenario to demonstrate the new vehicle customization features:
+    - Customizing a vehicle's color and type.
+    - Upgrading performance parts.
+    - Experiencing the performance boost during a race.
     """
-    print("--- Initializing Game ---")
-    modes_manager = ModesManager()
-    ai_brain = AIChaosBrain(modes_manager)
-    # Start with more coins to test purchases
-    bestiary = BeastBestiary(modes_manager, coins=20)
-    player = Kate()
+    print("--- Starting Simulation: Vehicle Customization and Racing Demo ---")
 
-    print(f"Welcome, {player.name}! Your trait: {player.trait}")
-    print(f"Initial mode: {modes_manager.current_mode}")
-    print(f"Initial difficulty: {modes_manager.difficulty}")
-    print(f"Initial coins: {bestiary.coins}")
+    # Initialize the main Game object
+    game = Game()
+
+    # Start with premium access for this demo to get right to the action
+    game.player_account.upgrade_to_premium()
     print("-" * 20)
 
-    # --- SCENARIO 1: MEDIUM DIFFICULTY (DEFAULT) ---
-    print("\n--- Scenario: Medium Difficulty ---")
-    print(f"Current difficulty: {modes_manager.difficulty}")
+    # A sequence of actions designed to showcase the new features
+    actions = [
+        # 1. Enter the underground world and head to the racetrack
+        "enter underground",
+        "explore racetrack",
 
-    # Demonstrate AI twist
-    print("\nSimulating player dodging...")
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('dodge')
-    # On medium, this is not enough to trigger a twist (needs 3 dodges in a row)
-    print("AI response (1 dodge):", ai_brain.throw_twist())
-    ai_brain.learn_move('dodge')
-    ai_brain.learn_move('dodge')
-    print("AI response (3 dodges):", ai_brain.throw_twist())
+        # 2. Check the default vehicle status
+        "vehicle status",
 
-    # Demonstrate beast cost
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
-    print("-" * 20)
+        # 3. Customize the vehicle
+        "customize color electric-blue",
+        "customize type truck",
 
+        # 4. Upgrade performance parts (costs coins)
+        "upgrade engine", # Cost: 20
+        "upgrade engine", # Cost: 40 (Player has 60 coins, so this will fail)
+        "upgrade tires",  # Cost: 15 (Player has 40 coins left, can afford)
 
-    # --- SCENARIO 2: EASY DIFFICULTY ---
-    print("\n--- Scenario: Easy Difficulty ---")
-    modes_manager.set_difficulty('easy')
-    print(f"Difficulty changed to: {modes_manager.difficulty}")
-    ai_brain.player_moves = [] # Reset moves for a clean test
-    bestiary.coins = 20 # Reset coins
+        # 5. Check the final vehicle status
+        "vehicle status",
 
-    # Demonstrate AI twist (less sensitive)
-    print("\nSimulating player dodging (less sensitive)...")
-    ai_brain.learn_move('dodge')
-    # On easy, 1 dodge is not enough to trigger a twist (needs 2)
-    print("AI response (1 dodge):", ai_brain.throw_twist())
-    ai_brain.learn_move('dodge')
-    print("AI response (2 dodges):", ai_brain.throw_twist())
+        # 6. Start a race to feel the difference
+        "switch_mode racing",
+        "start race",
+        "boost", # Should be more effective now with Level 2 engine
+        "drift", # Should be more effective now with Level 2 tires
+        "boost"
+    ]
 
-    # Demonstrate beast cost (cheaper)
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    # Cost should be 10 * 0.8 = 8
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
-    print("-" * 20)
+    # Execute the actions one by one
+    for action in actions:
+        game.game_loop_turn(action)
+        # A small divider to make the turn-by-turn output clearer
+        print("-" * 20)
 
-    # --- SCENARIO 3: HARD DIFFICULTY ---
-    print("\n--- Scenario: Hard Difficulty ---")
-    modes_manager.set_difficulty('hard')
-    print(f"Difficulty changed to: {modes_manager.difficulty}")
-    ai_brain.player_moves = [] # Reset moves
-    bestiary.coins = 20 # Reset coins
-
-    # Demonstrate AI twist (more sensitive)
-    print("\nSimulating player dodging (more sensitive)...")
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('attack')
-    ai_brain.learn_move('dodge')
-    # On hard, even one dodge in the last 4 moves is enough for a twist
-    print("AI response (1 dodge in last 4):", ai_brain.throw_twist())
-
-    # Demonstrate beast cost (more expensive)
-    print("\nAttempting to buy a knight_mount (base cost 10)...")
-    # Cost should be 10 * 1.5 = 15
-    print(bestiary.buy_beast('knight_mount'))
-    print(f"Coins remaining: {bestiary.coins}")
+    print("\n--- Simulation Ended ---")
+    print(f"Final Score: {game.score}")
+    print(f"Final Level: {game.level}")
+    print(f"Final Coins: {game.bestiary.coins}")
+    print(f"Final Vehicle Status: {game.vehicle_customizer.get_description()}")
 
 
 if __name__ == "__main__":
-    run_game_scenario()
+    run_vehicle_customization_scenario()
