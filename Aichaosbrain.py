@@ -15,7 +15,7 @@ class AIChaosBrain:
         - memory_file: The file where the AI's "memory" of player moves is stored.
         """
         self.player_moves = []  # Learns your quirks
-        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die', 'wind', 'rain']  # Your nightmares
+        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die', 'wind', 'rain', 'temperature_hot', 'temperature_cold', 'ground_slick', 'ground_sticky', 'vibration_deep']  # Your nightmares
         self.memory_file = 'chaos_memory.json'  # Persists across runs
 
     def learn_move(self, move):
@@ -46,6 +46,16 @@ class AIChaosBrain:
                 return "Howling winds whip through the arena! Haptics: Buffeting gusts. Brace yourself."
             elif twist == 'rain':
                 return "A downpour begins! Haptics: Cold rain on your skin. The ground is getting slick."
+            elif twist == 'temperature_hot':
+                return "A wave of heat washes over you! Haptics: Feel the furnace blast."
+            elif twist == 'temperature_cold':
+                return "A bitter cold seeps into your suit! Haptics: Frost crawling on your skin."
+            elif twist == 'ground_slick':
+                return "The ground turns to slick ice! Haptics: Loss of traction, careful movement required."
+            elif twist == 'ground_sticky':
+                return "The ground becomes a sticky morass! Haptics: Feet feel heavy, movement is sluggish."
+            elif twist == 'vibration_deep':
+                return "A low, deep hum vibrates through the arena! Haptics: A constant, unsettling rumble."
             else:
                 return "Floating islands spawn—gravity flips! Stomach drop incoming."
         else:
