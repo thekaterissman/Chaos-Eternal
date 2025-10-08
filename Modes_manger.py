@@ -33,7 +33,7 @@ class ModesManager:
         return "Invalid mode – chaos only!"
 
     def earn_xp(self, action):
-        xp_gain = random.randint(10, 50)
+        xp_gain = int(random.randint(10, 50) * self.player.xp_rate)
         self.xp += xp_gain
         if self.current_mode == 'survival':
             self.shelters.append('new_shelter')  # Build persists
@@ -54,6 +54,12 @@ class ModesManager:
             return self.player.heal(boosted_heal)
         return self.items.use_item(item_name)
 
+    def equip_item(self, item_name):
+        return self.items.equip_item(item_name)
+
+    def unequip_item(self, item_name):
+        return self.items.unequip_item(item_name)
+
     def play_music(self, station_name):
         return self.music_player.select_station(station_name)
 
@@ -63,6 +69,10 @@ class ModesManager:
 # Usage:
 # manager = ModesManager()
 # print(manager.get_swag("Roman Toga"))
+# print(manager.equip_item("Roman Toga"))
+# print(manager.earn_xp("test"))
+# print(manager.unequip_item("Roman Toga"))
+# print(manager.earn_xp("test"))
 # print(manager.use_item("Roman Toga"))
 # print(manager.play_music("Rock"))
 # manager.switch_mode("racing")
