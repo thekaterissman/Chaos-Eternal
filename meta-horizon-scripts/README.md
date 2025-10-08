@@ -39,6 +39,20 @@ hz.registerComponent(HelloWorld);
 
 When attached to an object in a Meta Horizon World, this script will print "The Queendom is manifest." to the debug console when the world starts. It is the first digital echo of the First Royal Decree.
 
+### `StargateFloor.ts`
+
+This component transforms any object into a dynamic, shimmering "Stargate floor." It creates a beautiful, color-shifting visual effect that is easy to use and customize.
+
+To use it, simply attach the `StargateFloor` script to any object in your world. The object will begin to animate, smoothly transitioning between two customizable colors.
+
+**Configurable Properties:**
+
+*   `speed` (Number): Controls the speed of the color-shifting animation. Higher values result in a faster transition. Default: `1.0`.
+*   `color1` (Color): The first color in the animation cycle. Default: Blue.
+*   `color2` (Color): The second color in the animation cycle. Default: Cyan.
+
+You can adjust these properties directly in the Meta Horizon Worlds editor to create the perfect visual effect for your world without needing to write any code.
+
 ## How to Use
 
 These scripts are designed for the **Meta Horizon Worlds** creation environment. They are not intended to be run in a standard Node.js or web browser environment.
