@@ -1,1 +1,1 @@
-{"moves": ["attack", "attack", "attack", "dodge"]}
+{"moves": ["create_award hat \"Phoenix Crest\" \"A helmet forged in the heart of a star.\"", "view_vip_gallery", "switch_character amya", "view_vip_gallery", "create_award glasses \"Scales of Justice\" \"Lenses that see the truth in all things.\"", "view_creations", "switch_mode pvp", "attack", "switch_mode team_vs_team", "block"]}

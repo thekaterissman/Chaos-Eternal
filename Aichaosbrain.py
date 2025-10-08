@@ -18,6 +18,7 @@ class AIChaosBrain:
         self.modes_manager = modes_manager
         self.player_moves = []  # Learns your quirks
         self.fears = ['sandstorm', 'floating_islands', 'dance_or_die']  # Your nightmares
+        self.combat_moves = ['attack', 'block', 'dodge']
         self.memory_file = 'chaos_memory.json'  # Persists across runs
 
     def learn_move(self, move):
@@ -57,6 +58,25 @@ class AIChaosBrain:
         else:
             # Standard AI response for less defensive players.
             return "AI adapts: Basic roar from Leo. Feel it rumble."
+
+    def get_combat_move(self):
+        """
+        Determines the AI's combat move based on the player's recent actions.
+        This creates a simple, reactive combat opponent for PvE mode.
+        """
+        # Simple strategy: Counter the player's recent tendency.
+        recent_attacks = self.player_moves[-3:].count('attack')
+        recent_defenses = self.player_moves[-3:].count('block') + self.player_moves[-3:].count('dodge')
+
+        # If player is aggressive, AI should be defensive.
+        if recent_attacks >= 2:
+            return 'block'
+        # If player is defensive, AI should be aggressive.
+        elif recent_defenses >= 2:
+            return 'attack'
+        # Otherwise, choose a random move.
+        else:
+            return random.choice(self.combat_moves)
 
     def save_memory(self):
         """

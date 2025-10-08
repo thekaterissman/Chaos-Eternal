@@ -4,6 +4,9 @@ from Aichaosbrain import AIChaosBrain
 from Beast_bestiary import BeastBestiary
 from Gotcha_fails_system import GotchaFailsSystem
 from Modes_manager import ModesManager
+import shlex
+from Crowd_dynamics import CrowdDynamics
+from Creations_manager import CreationsManager
 from characters import Kate, Amya, Holly
 
 class Game:
@@ -23,10 +26,12 @@ class Game:
             'whoopee_cushion': {'quantity': 1, 'effect': 'A comical *PFFFT* distracts your opponent.'}
         }
         self.character = character
-        self.ai_brain = AIChaosBrain()
-        self.bestiary = BeastBestiary(coins=10) # Start with some coins
-        self.fails_system = GotchaFailsSystem()
         self.modes_manager = ModesManager()
+        self.ai_brain = AIChaosBrain(self.modes_manager)
+        self.bestiary = BeastBestiary(self.modes_manager, coins=10) # Start with some coins
+        self.fails_system = GotchaFailsSystem()
+        self.crowd = CrowdDynamics()
+        self.creations_manager = CreationsManager()
 
         # Load any persistent data
         self.ai_brain.load_memory()
@@ -128,6 +133,46 @@ class Game:
             except IndexError:
                 print("Invalid switch_mode command. Use 'switch_mode [mode]'.")
 
+        elif player_action.startswith("create_award"):
+            try:
+                parts = shlex.split(player_action)
+                # Expected format: ['create_award', 'type', 'name', 'description']
+                if len(parts) != 4:
+                    raise IndexError
+
+                item_type = parts[1]
+                item_name = parts[2]
+                item_description = parts[3]
+                creation_message = self.creations_manager.create_award(self.character.name, self.character.is_vip, item_type, item_name, item_description)
+                print(creation_message)
+                self.score += 50 # Reward for creativity
+                print(f"** Score +50 for creating an award! Total Score: {self.score} **")
+            except (IndexError, ValueError):
+                print("Invalid command. Use 'create_award <type> \"<name>\" \"<description>\"'.")
+
+        elif player_action == "view_creations":
+            all_items = self.creations_manager.get_all_creations()
+            if not all_items:
+                print("No custom awards have been created yet.")
+            else:
+                print("\n--- The Gallery of Player-Crafted Swag ---")
+                for item in all_items:
+                    print(f"- '{item['name']}' ({item['type']}) by {item['creator']}: {item['description']}")
+                print("-----------------------------------------")
+
+        elif player_action == "view_vip_gallery":
+            if self.character.is_vip:
+                vip_items = self.creations_manager.get_vip_creations()
+                if not vip_items:
+                    print("No VIP creations exist yet. Be the first!")
+                else:
+                    print("\n--- The VIP-Exclusive Gallery ---")
+                    for item in vip_items:
+                        print(f"- '{item['name']}' ({item['type']}) by {item['creator']}: {item['description']}")
+                    print("-----------------------------------")
+            else:
+                print("Access Denied. This gallery is for VIP members only.")
+
         else:
             # Handle actions based on the current mode
             if self.modes_manager.current_mode == 'therapy':
@@ -141,6 +186,77 @@ class Game:
                     print(f"** Score +5 for reflecting! Total Score: {self.score} **")
                 else:
                     print(f"In Therapy Mode, you gently redirect your '{player_action}' energy into a peaceful hum.")
+
+            elif self.modes_manager.current_mode in ['pvp', 'pve', 'team_vs_team']:
+                print(f"--- {self.modes_manager.current_mode.upper()} BATTLE ---")
+
+                # For PvE, get the AI's combat move.
+                if self.modes_manager.current_mode == 'pve':
+                    ai_move = self.ai_brain.get_combat_move()
+                    print(f"The AI opponent chose to {ai_move.upper()}!")
+
+                    # Simple combat resolution logic (Player vs. AI)
+                    outcome = "It's a draw! The fighters circle each other, looking for an opening."
+                    event = 'neutral'
+
+                    if player_action == 'attack' and ai_move == 'dodge':
+                        outcome = "The AI dodges your attack with lightning speed!"
+                        event = 'missed_attack'
+                        self.score += 5
+                    elif player_action == 'attack' and ai_move == 'block':
+                        outcome = "Your attack is blocked! The AI stands firm."
+                        event = 'missed_attack'
+                        self.score += 5
+                    elif player_action == 'attack' and ai_move == 'attack':
+                        outcome = "A critical hit! You land a solid blow on the AI!"
+                        event = 'critical_hit'
+                        self.score += 25
+                    elif player_action in ['dodge', 'block'] and ai_move == 'attack':
+                         outcome = f"You successfully {player_action} the AI's attack!"
+                         event = 'sudden_twist'
+                         self.score += 10
+
+                    print(f"Outcome: {outcome}")
+
+                    # Get and print the crowd's reaction to the event
+                    crowd_reaction = self.crowd.get_reaction(event)
+                    print(crowd_reaction)
+
+                elif self.modes_manager.current_mode == 'pvp':
+                    # Simulate a 1v1 PvP encounter
+                    print("You face another champion of the Coliseum!")
+                    if player_action == 'attack':
+                        outcome = "You trade blows, the crowd roaring with every impact!"
+                        event = 'critical_hit'
+                        self.score += 20
+                    else: # 'dodge' or 'block'
+                        outcome = f"You skillfully {player_action} your opponent's furious assault, looking for an opening."
+                        event = 'sudden_twist'
+                        self.score += 10
+                    print(f"Outcome: {outcome}")
+                    crowd_reaction = self.crowd.get_reaction(event)
+                    print(crowd_reaction)
+
+                elif self.modes_manager.current_mode == 'team_vs_team':
+                    # Simulate a team battle
+                    team_a = ["You", self.character.name]
+                    team_b = ["Opponent_A", "Opponent_B"]
+                    print(f"Team Battle! {' & '.join(team_a)} vs. {' & '.join(team_b)}!")
+                    if player_action == 'attack':
+                        outcome = "You coordinate with your team, focusing fire on a single target! The enemy formation breaks!"
+                        event = 'critical_hit'
+                        self.score += 30
+                    else: # 'dodge' or 'block'
+                        outcome = "Your team forms a defensive wall, weathering a brutal assault from the opposing crew!"
+                        event = 'tense'
+                        self.score += 15
+                    print(f"Outcome: {outcome}")
+                    crowd_reaction = self.crowd.get_reaction(event)
+                    print(crowd_reaction)
+
+                xp_message = self.modes_manager.earn_xp(player_action)
+                print(xp_message)
+
             else:
                 # For any other action, treat it as a generic action that earns XP and score.
                 xp_message = self.modes_manager.earn_xp(player_action)

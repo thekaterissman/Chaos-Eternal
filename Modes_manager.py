@@ -34,18 +34,22 @@ class ModesManager:
         Switches the game to a new mode.
         Provides a descriptive message for the selected mode.
         """
-        modes = ['hunter', 'survival', 'pvp', 'raid', 'therapy']
+        modes = ['hunter', 'survival', 'pvp', 'pve', 'team_vs_team', 'raid', 'therapy']
         if mode in modes:
             self.current_mode = mode
             if mode == 'survival':
                 return "Survival Mode: Craft vines to blades. XP sticks – no resets!"
             elif mode == 'pvp':
-                return "PvP: Teams self-select. Mix crews, clash in the arena!"
+                return "Player vs. Player: One on one. No teams, no mercy. May the best fighter win!"
+            elif mode == 'pve':
+                return "Player vs. AI: Test your might against the Coliseum's digital gladiators!"
+            elif mode == 'team_vs_team':
+                return "Team vs. Team: Assemble your crew! It's time for a group showdown."
             elif mode == 'raid':
                 return "Raid villages! Steal loot, burn down – haptics make walls crack."
             elif mode == 'therapy':
                 return "Therapy Mode: A peaceful space. No combat, just creation and reflection."
-            else:
+            else: # hunter
                 return "Hunter Mode: Self-pick teams. Hunt or be hunted."
         return "Invalid mode – chaos only!"
 
