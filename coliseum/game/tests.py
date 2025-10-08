@@ -90,3 +90,69 @@ class GameLogicTests(TestCase):
         self.assertContains(response, f"Welcome to The Coliseum, {self.username}!")
         self.assertContains(response, f"Score: {self.player_profile.score}")
         self.assertContains(response, f"Level: {self.player_profile.level}")
+
+    def test_game_sequence(self):
+        """Test a sequence of game actions to verify the game loop and state changes."""
+        # Initial state check
+        self.assertEqual(self.player_profile.score, 0)
+        self.assertEqual(self.player_profile.current_mode, 'hunter')
+
+        # Action 1: A standard action in hunter mode
+        self.client.post(self.home_url, {'action': 'fight'})
+        self.player_profile.refresh_from_db()
+        self.assertGreater(self.player_profile.score, 0)
+
+        # Action 2: Switch to therapy mode
+        self.client.post(self.home_url, {'action': 'switch_mode therapy'})
+        self.player_profile.refresh_from_db()
+        self.assertEqual(self.player_profile.current_mode, 'therapy')
+
+        # Action 3: Perform a therapy-specific action
+        score_before_therapy = self.player_profile.score
+        self.client.post(self.home_url, {'action': 'create with golden light'})
+        self.player_profile.refresh_from_db()
+        self.assertEqual(self.player_profile.score, score_before_therapy + 5)
+
+        # Action 4: Switch back to hunter mode
+        self.client.post(self.home_url, {'action': 'switch_mode hunter'})
+        self.player_profile.refresh_from_db()
+        self.assertEqual(self.player_profile.current_mode, 'hunter')
+
+        # Action 5: Use a special ability
+        score_before_ability = self.player_profile.score
+        response = self.client.post(self.home_url, {'action': 'use ability'})
+        self.player_profile.refresh_from_db()
+        self.assertContains(response, "special ability")
+        self.assertGreater(self.player_profile.score, score_before_ability)
+
+
+class LightTherapyTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.home_url = reverse('home')
+        self.username = 'therapist'
+        self.password = 'a-very-calm-password-456!'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
+
+    def test_switch_to_therapy_mode(self):
+        """Test that a player can switch to therapy mode and see suggested actions."""
+        response = self.client.post(self.home_url, {'action': 'switch_mode therapy'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Current Mode:</strong> Therapy")
+        self.assertContains(response, "Therapy Mode Suggestions:")
+        self.assertContains(response, "Create with golden light")
+
+    def test_light_therapy_actions(self):
+        """Test that therapy-specific actions produce the correct messages."""
+        # First, switch to therapy mode
+        self.client.post(self.home_url, {'action': 'switch_mode therapy'})
+
+        # Test a create action
+        response = self.client.post(self.home_url, {'action': 'create with blue light'})
+        self.assertContains(response, "You weave blue light into the form of")
+
+        # Test a reflect action
+        response = self.client.post(self.home_url, {'action': 'reflect on my aura'})
+        self.assertContains(response, "You look inward, sensing your aura.")

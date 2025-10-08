@@ -38,15 +38,23 @@ def home_view(request):
     player_profile = request.user.playerprofile
     game = Game(player_profile)
     messages = []
+    suggested_actions = []
 
     if request.method == 'POST':
         action = request.POST.get('action')
         if action:
             messages = game.game_loop_turn(action)
 
+    # After processing the action, get the current state of the game
+    current_mode = game.modes_manager.current_mode
+    if current_mode == 'therapy':
+        suggested_actions = game.light_therapy_manager.get_light_therapy_actions()
+
     context = {
         'player_profile': player_profile,
         'messages': messages,
+        'current_mode': current_mode,
+        'suggested_actions': suggested_actions,
     }
     return render(request, 'game/home.html', context)
 

@@ -4,14 +4,7 @@
     <h2>Sign Up</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.username.label_tag }} {{ form.username }}
-        {{ form.email.label_tag }} {{ form.email }}
-        <p>
-            {{ form.agree_to_terms.label_tag }} {{ form.agree_to_terms }}
-            <a href="{% url 'user_agreement' %}" target="_blank">View User Agreement</a>
-        </p>
-        {{ form.password.label_tag }} {{ form.password }}
-        {{ form.password2.label_tag }} {{ form.password2 }}
+        {{ form.as_p }}
         <button type="submit">Sign Up</button>
     </form>
 {% endblock %}

@@ -7,11 +7,21 @@
     <hr>
 
     <h3>What will you do?</h3>
+    <p><strong>Current Mode:</strong> {{ current_mode|title }}</p>
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="action" placeholder="e.g., fight, use ability, fail" required>
+        <input type="text" name="action" placeholder="e.g., fight, switch_mode therapy" required>
         <button type="submit">Act</button>
     </form>
+
+    {% if suggested_actions %}
+        <h4>Therapy Mode Suggestions:</h4>
+        <ul>
+            {% for action in suggested_actions %}
+                <li>{{ action }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <hr>
 
