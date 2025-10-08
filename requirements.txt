@@ -1,4 +1,3 @@
 packaging
 Django
-psycopg2-binary
 pytz

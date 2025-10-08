@@ -12,22 +12,10 @@ class ModesManager:
         - current_mode: The active game mode.
         - xp: The player's experience points, which are persistent.
         - shelters: A list representing player-built structures in survival mode.
-        - difficulty: The game's difficulty level.
         """
         self.current_mode = 'hunter'
         self.xp = 0
         self.shelters = []  # Persist builds
-        self.difficulty = 'medium'  # Default difficulty
-
-    def set_difficulty(self, level):
-        """
-        Sets the game's difficulty level.
-        - level: The desired difficulty ('easy', 'medium', 'hard').
-        """
-        if level in ['easy', 'medium', 'hard']:
-            self.difficulty = level
-            return f"Difficulty set to {level}."
-        return "Invalid difficulty level."
 
     def switch_mode(self, mode):
         """

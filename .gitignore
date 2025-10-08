@@ -61,6 +61,11 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Runtime files
+chaos_memory.json
+cookies.txt
+server.log
+
 # Flask stuff:
 instance/
 .webassets-cache
