@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "baseUrl": ".",
+    "paths": {
+      "horizon/core": ["types/horizon/core"]
+    }
+  }
+}
