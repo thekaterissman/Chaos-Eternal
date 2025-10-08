@@ -207,3 +207,8 @@ marimo/_lsp/
 __marimo__/
 env
 venv
+
+# Node.js
+/meta-horizon-scripts/node_modules/
+/meta-horizon-scripts/HelloWorld.js
+/meta-horizon-scripts/dist/
