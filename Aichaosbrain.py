@@ -17,7 +17,7 @@ class AIChaosBrain:
         """
         self.modes_manager = modes_manager
         self.player_moves = []  # Learns your quirks
-        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die']  # Your nightmares
+        self.fears = ['sandstorm', 'floating_islands', 'dance_or_die', 'wind', 'rain', 'temperature_hot', 'temperature_cold']  # Your nightmares
         self.memory_file = 'chaos_memory.json'  # Persists across runs
 
     def learn_move(self, move):
@@ -52,6 +52,14 @@ class AIChaosBrain:
                 return "AI whispers: Dance for a shield, or get wrecked! Groove time."
             elif twist == 'sandstorm':
                 return "Sudden sandstorm! Haptics: Grit in your teeth. Dodge or bury."
+            elif twist == 'wind':
+                return "Howling winds whip through the arena! Haptics: Buffeting gusts. Brace yourself."
+            elif twist == 'rain':
+                return "A downpour begins! Haptics: Cold rain on your skin. The ground is getting slick."
+            elif twist == 'temperature_hot':
+                return "A wave of heat washes over you! Haptics: Feel the furnace blast."
+            elif twist == 'temperature_cold':
+                return "A bitter cold seeps into your suit! Haptics: Frost crawling on your skin."
             else:
                 return "Floating islands spawn—gravity flips! Stomach drop incoming."
         else:
