@@ -2,6 +2,7 @@ import random
 import json  # For saving "memories"
 from effects_renderer import EffectsRenderer
 from ai_body import AIBody
+from environment import Environment
 
 class AIChaosBrain:
     def __init__(self):
@@ -10,6 +11,7 @@ class AIChaosBrain:
         self.memory_file = 'chaos_memory.json'  # Persists across runs
         self.renderer = EffectsRenderer()
         self.body = AIBody(self.renderer)
+        self.environment = Environment()
 
     def learn_move(self, move):
         self.player_moves.append(move)
