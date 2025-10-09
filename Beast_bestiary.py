@@ -19,10 +19,7 @@ class BeastBestiary:
             'scorpio_sting': {'cost': 1, 'effect': 'Cosmic slap – buzz in your hand!'},
             'taurus_bull': {'cost': 2, 'effect': 'Charge forward – ground quakes under feet.'},
             'phoenix': {'cost': 5, 'effect': 'Rise from plasma – warm glow on skin.'},
-            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'},
-            'great_white_shark': {'cost': 15, 'effect': "Rule the depths. Haptics: Feel the raw power of the ocean's apex predator."},
-            'bioluminescent_jellyfish': {'cost': 3, 'effect': "A silent, glowing companion. Haptics: A gentle, pulsing light emanates from you."},
-            'giant_squid': {'cost': 20, 'effect': "Master of the abyss. Haptics: Feel the immense, mysterious pressure of the deep."}
+            'knight_mount': {'cost': 10, 'effect': 'Legendary knight: Customize plasma armor, win the Chaos Crown!'}
         }
         self.owned_beasts = []
 
