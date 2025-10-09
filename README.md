@@ -3,7 +3,16 @@
 most important this is designed with a core lattice!
 
 ​Iron gates groan, trumpets blast, and hearts sync to the drum. The ground quakes as the Coliseum rips free, floating. Dust dances, the arena lifts, and three queens rise. Amya, Holly, and Kate rule as the Chaos Queens. Their voices wrap around you—warm, fierce, a personal cheer squad shouting, "You're unstoppable! Keep swinging!"
-​This isn't a game. It's a world. And it's alive.
+
+## How to Play
+
+New to the Coliseum? These guides will help you start your journey:
+
+*   **[How to Play](./HOW_TO_PLAY.md):** Learn the core mechanics of the game.
+*   **[Worlds Guide](./WORLDS_GUIDE.md):** Discover the different worlds you can enter.
+*   **[Bestiary Guide](./BESTIARY_GUIDE.md):** Meet the creatures you can ride.
+​
+This isn't a game. It's a world. And it's alive.
 ​You're Not Watching. You're In It.
 ​There are no screens. You're inside the arena, and every hit is a punch to the gut. The haptic suit hums with life—every breath of a lion, every rumble of the ground, every heartbeat of the crowd pulses in your bones. Grip the haptic sword, palms slick with sweat. Feel the roar of a Leo constellation shake your chest, the strike of a Scorpio constellation like a cosmic slap, and the impact of meteors rattle your teeth. The arena isn't a place; it's a living beast, and you're inside its belly.
 ​Worlds blend and reimagine themselves. Step from a forest to an arena as gravity flips and your stomach drops. A jungle turns to neon, then ice, then fire. With a voice command—"ice disco!"—the world remixes instantly. Boom: frozen beats and glittering lights. No lag, no reloads, no repeat lines. Every moment is fresh. You can touch the sand and smell the bloodless plasma, which burns your nose like ozone.
