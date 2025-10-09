@@ -1,0 +1,17 @@
+{
+  "ecosystem": {
+    "coins": 120,
+    "ownedBeasts": {}
+  },
+  "clock": {
+    "time": 0,
+    "currentEventName": null,
+    "eventTimer": 0
+  },
+  "reputation": {
+    "honorPoints": 0,
+    "chaosPoints": 0,
+    "deedsLog": []
+  },
+  "playerBeasts": []
+}

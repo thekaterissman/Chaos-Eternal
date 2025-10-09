@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 // This will eventually be imported from WorldClock.ts
 export interface WorldEvent {
     name: string;
-    type: 'dangerous' | 'peaceful' | 'chaotic';
+    type: 'dangerous' | 'peaceful' | 'chaotic' | 'cataclysm';
 }
 
 // --- Type Definitions for the Beast Ecosystem ---
@@ -19,6 +19,7 @@ export interface OwnedBeast {
     template: string;
     level: number;
     xp: number;
+    happiness: number; // 0-100
 }
 
 export class BeastEcosystem {
@@ -73,7 +74,8 @@ export class BeastEcosystem {
             this.ownedBeasts[beastId] = {
                 template: beastName,
                 level: 1,
-                xp: 0
+                xp: 0,
+                happiness: 100 // Start with maximum happiness
             };
             return [`A new ${beastName} joins your sanctuary! Its journey begins.`, beastId];
         } else {
@@ -111,8 +113,17 @@ export class BeastEcosystem {
         const beast = this.ownedBeasts[beastId];
         if (!beast) return "Unknown beast.";
 
+        if (beast.happiness < 20) {
+            return `Your ${beast.template} is too sad to use its ability. It looks away dejectedly.`;
+        }
+
         const template = this.beastTemplates[beast.template];
-        return `Your ${beast.template} (Lvl ${beast.level}) uses its ability: ${template.ability}`;
+        let effectiveness = "";
+        if (beast.happiness > 80) {
+            effectiveness = " It's a critical success!";
+        }
+
+        return `Your ${beast.template} (Lvl ${beast.level}) uses its ability: ${template.ability}${effectiveness}`;
     }
 
     public getBeastDetails(beastId: string): string {
@@ -121,6 +132,36 @@ export class BeastEcosystem {
 
         const template = this.beastTemplates[beast.template];
         const xpNeeded = template.xpToNextLevel;
-        return `Beast ID: ${beastId.substring(0, 8)}, Type: ${beast.template}, Level: ${beast.level}, XP: ${beast.xp}/${xpNeeded}`;
+        return `Beast ID: ${beastId.substring(0, 8)}, Type: ${beast.template}, Level: ${beast.level}, XP: ${beast.xp}/${xpNeeded}, Happiness: ${beast.happiness}/100`;
+    }
+
+    public decayHappiness(amount = 1): void {
+        for (const id in this.ownedBeasts) {
+            this.ownedBeasts[id].happiness = Math.max(0, this.ownedBeasts[id].happiness - amount);
+        }
+    }
+
+    public playWithBeast(beastId: string): string {
+        const beast = this.ownedBeasts[beastId];
+        if (!beast) return "Unknown beast.";
+
+        beast.happiness = Math.min(100, beast.happiness + 15);
+        return `You play with your ${beast.template}. It looks much happier now! (Happiness: ${beast.happiness}/100)`;
+    }
+
+    public handleCataclysm(): string[] {
+        const messages: string[] = [];
+        if (Object.keys(this.ownedBeasts).length === 0) {
+            return ["The cataclysm rages, but you have no beasts to be frightened."];
+        }
+
+        messages.push("Your beasts are terrified by the cataclysm!");
+        for (const id in this.ownedBeasts) {
+            const beast = this.ownedBeasts[id];
+            const oldHappiness = beast.happiness;
+            beast.happiness = Math.max(0, oldHappiness - 30); // Cataclysms are very scary
+            messages.push(`- Your ${beast.template}'s happiness dropped from ${oldHappiness} to ${beast.happiness}.`);
+        }
+        return messages;
     }
 }

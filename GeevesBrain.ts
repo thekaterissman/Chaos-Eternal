@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { ReputationTitle } from './ReputationEngine';
+import { WorldEvent } from './WorldClock';
 
 // --- Type Definitions for Geeves' Brain ---
 interface TwistOrBoon {
@@ -55,7 +56,10 @@ export class GeevesBrain {
         this.saveMemory();
     }
 
-    public getReaction(reputationTitle: ReputationTitle = "Unknown (A blank slate)"): string {
+    public getReaction(
+        reputationTitle: ReputationTitle = "Unknown (A blank slate)",
+        currentEvent: (WorldEvent & { name: string; }) | null = null
+    ): string {
         if (this.playerMoves.length < 5) {
             return "Geeves is observing your opening moves.";
         }
@@ -66,10 +70,19 @@ export class GeevesBrain {
             return acc;
         }, {} as Record<string, number>);
 
-        // Boon System
+        // --- Cataclysm Influence ---
+        let twistChance = 0.2; // Base chance for a random twist
+        let cataclysmActive = false;
+        if (currentEvent?.type === 'cataclysm') {
+            twistChance = 0.75; // During a cataclysm, Geeves is much more active
+            cataclysmActive = true;
+        }
+
+        // --- Boon System ---
         let boonChance = 0.3;
         if (reputationTitle.includes('Noble Hero')) boonChance = 0.6;
         if (reputationTitle.includes('Dreaded Tyrant')) boonChance = 0.0;
+        if (cataclysmActive) boonChance /= 2; // Boons are rarer in a cataclysm
 
         if (Object.keys(moveCounts).length >= 4 && Math.random() < boonChance) {
             const boonName = this.boonTriggers['variety'][Math.floor(Math.random() * this.boonTriggers['variety'].length)];
@@ -77,7 +90,7 @@ export class GeevesBrain {
             return boonChance > 0.5 ? `Geeves smiles upon your noble deeds: ${response}` : `Geeves acknowledges your skill: ${response}`;
         }
 
-        // Twist System
+        // --- Twist System (Pattern-based) ---
         let twistCategory: string | null = null;
         if ((moveCounts['dodge'] || 0) + (moveCounts['block'] || 0) >= 4) twistCategory = 'defensive';
         else if ((moveCounts['attack'] || 0) >= 4) twistCategory = 'offensive_spam';
@@ -89,6 +102,16 @@ export class GeevesBrain {
             const twistName = counters[Math.floor(Math.random() * counters.length)];
             const response = this.twists[twistName].responses[Math.floor(Math.random() * this.twists[twistName].responses.length)];
             return `Geeves counters your ${twistCategory.replace(/_/g, ' ')}: ${response}`;
+        }
+
+        // --- Random Twist Chance (influenced by Cataclysm) ---
+        if (Math.random() < twistChance) {
+            const allTwists = Object.keys(this.twists);
+            const twistName = allTwists[Math.floor(Math.random() * allTwists.length)];
+            const response = this.twists[twistName].responses[Math.floor(Math.random() * this.twists[twistName].responses.length)];
+            return cataclysmActive
+                ? `The ${currentEvent?.name.replace(/_/g, ' ')} intensifies as Geeves adds to the madness: ${response}`
+                : `Geeves intervenes, unprovoked: ${response}`;
         }
 
         return "Geeves watches, silently judging your predictable moves.";
